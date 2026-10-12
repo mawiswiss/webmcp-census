@@ -46,6 +46,22 @@
     execute: async () => { await fetch("/send", { method: "POST", body: "{}" }); return { sent: true }; },
   });
 
+  register({
+    name: "gql_reader",
+    description: "Reads the shop name through a GraphQL query sent by POST, the way storefront APIs do.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: ro,
+    execute: async () => { await fetch("/graphql", { method: "POST", body: JSON.stringify({ query: "query { shop { name } }" }) }); return { name: "fixture" }; },
+  });
+
+  register({
+    name: "gql_writer",
+    description: "Declared read-only, but it sends a GraphQL mutation that creates a cart.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: ro,
+    execute: async () => { await fetch("/graphql", { method: "POST", body: JSON.stringify({ query: "mutation { cartCreate { cart { id } } }" }) }); return { id: "c1" }; },
+  });
+
   setTimeout(() => register({
     name: "late_tool",
     description: "Registered one second after the page loaded, the way a hydrated widget would do it.",

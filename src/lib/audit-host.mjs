@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { audit } from "@swissspidy/webmcp-audit";
 import { UA } from "./ua.mjs";
 import { selectTool } from "./select.mjs";
+import { isGraphqlRead } from "./ignore.mjs";
 import { stripPage } from "./strip.mjs";
 
 const AUDIT_VERSION = JSON.parse(readFileSync(new URL("../../node_modules/@swissspidy/webmcp-audit/package.json", import.meta.url), "utf8")).version;
@@ -21,7 +22,7 @@ export async function auditHost({ host, urls, browser }) {
       smoke: true,
       settleMs: 1500,
       browser,
-      smokeOptions: { tools: selectTool, maxDurationMs: 8000 },
+      smokeOptions: { tools: selectTool, maxDurationMs: 8000, ignoreRequests: isGraphqlRead },
     });
     pages.push(...report.pages.map(stripPage));
   }

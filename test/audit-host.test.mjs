@@ -12,10 +12,12 @@ test("the harness sees every broken thing in the fixture and nothing it must not
     const raw = await auditHost({ host: "fixture", urls: [server.url], browser });
     const page = raw.pages[0];
     assert.equal(page.status, "ok");
-    assert.deepEqual(page.snapshot.tools.map((t) => t.name).sort(), ["get_time", "late_tool", "liar", "nullish", "send_report", "unfinished"]);
+    assert.deepEqual(page.snapshot.tools.map((t) => t.name).sort(), ["get_time", "gql_reader", "gql_writer", "late_tool", "liar", "nullish", "send_report", "unfinished"]);
     const rules = new Set([...page.lint.findings, ...page.smoke.findings].map((f) => f.ruleId));
     for (const id of ["param-description-missing", "schema-shape", "result-contains-null", "result-writes"]) assert.ok(rules.has(id), `expected finding ${id}`);
     assert.ok(page.smoke.runs.some((r) => r.tool === "late_tool" && r.ok), "late tool was seen and ran");
+    const writers = new Set(page.smoke.findings.filter((f) => f.ruleId === "result-writes").map((f) => f.tool));
+    assert.deepEqual([...writers].sort(), ["gql_writer", "liar"], "a GraphQL query is a read, a mutation and a plain POST are writes");
     assert.ok(!page.smoke.runs.some((r) => r.tool === "send_report"), "side-effect name never executed");
     assert.ok(!page.smoke.runs.some((r) => r.tool === "unfinished"), "tool without readOnlyHint never executed");
     assert.ok(page.smoke.runs.every((r) => !("result" in r) && !("args" in r)), "results and args stripped");
