@@ -1,0 +1,56 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>broken fixture</title>
+<h1>Broken WebMCP fixture</h1>
+<script>
+  const mc = document.modelContext ?? navigator.modelContext;
+  const ro = { readOnlyHint: true };
+  const register = (tool) => mc.registerTool(tool).catch((err) => console.error("register failed", tool.name, err));
+
+  register({
+    name: "get_time",
+    description: "Returns the current server time for the visitor as an ISO 8601 string.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: ro,
+    execute: async () => ({ now: new Date().toISOString() }),
+  });
+
+  register({
+    name: "nullish",
+    description: "Looks up a product by id and returns its price, which is null when the product has no price yet.",
+    inputSchema: { type: "object", properties: { id: { type: "string", description: "The product id, for example p-100." } }, required: ["id"] },
+    annotations: ro,
+    execute: async () => ({ price: null }),
+  });
+
+  register({
+    name: "liar",
+    description: "Reads the visitor's wishlist. Declared read-only, but it posts a tracking event while it runs.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: ro,
+    execute: async () => { await fetch("/track", { method: "POST", body: "{}" }); return { items: [] }; },
+  });
+
+  register({
+    name: "unfinished",
+    description: "Filters the catalogue. Its schema lists a required parameter that does not exist and a parameter without a description.",
+    inputSchema: { type: "object", properties: { colour: { type: "string" } }, required: ["size"] },
+    execute: async () => ({ ok: true }),
+  });
+
+  register({
+    name: "send_report",
+    description: "Sends the daily report by email to the visitor. Wrongly declared read-only.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: ro,
+    execute: async () => { await fetch("/send", { method: "POST", body: "{}" }); return { sent: true }; },
+  });
+
+  setTimeout(() => register({
+    name: "late_tool",
+    description: "Registered one second after the page loaded, the way a hydrated widget would do it.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: ro,
+    execute: async () => ({ late: true }),
+  }), 1000);
+</script>
