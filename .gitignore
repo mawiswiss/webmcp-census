@@ -3,3 +3,4 @@ data/raw/
 data/ora/
 test-results/
 .webmcp-audit/
+data/*.log
