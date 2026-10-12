@@ -1,0 +1,25 @@
+{
+  "name": "webmcp-census",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Calls every read-only WebMCP tool in the public directory and publishes what happens.",
+  "scripts": {
+    "test": "node --test test/",
+    "fetch": "node src/fetch-directory.mjs",
+    "audit": "node src/audit-one.mjs",
+    "census": "node src/run-census.mjs",
+    "ora": "node src/fetch-ora.mjs",
+    "aggregate": "node src/aggregate.mjs"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "1.64",
+    "@swissspidy/playwright-webmcp": "^0.3.0",
+    "@swissspidy/webmcp-audit": "^0.3.0",
+    "@swissspidy/webmcp-lint": "^0.3.0"
+  }
+}
