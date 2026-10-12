@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>legacy fixture</title>
+<h1>Legacy WebMCP fixture</h1>
+<script>
+  const tools = [];
+  if (!navigator.modelContext) {
+    navigator.modelContext = { registerTool(tool) { tools.push(tool); }, listTools: () => tools.slice() };
+  }
+  navigator.modelContext.registerTool({
+    name: "get_hours",
+    description: "Returns the opening hours of the shop for the coming week.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: { readOnlyHint: true },
+    execute: async () => ({ hours: "9-17" }),
+  });
+</script>

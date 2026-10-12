@@ -27,3 +27,18 @@ test("the harness sees every broken thing in the fixture and nothing it must not
     await server.close();
   }
 });
+
+test("a page that registers only on a stand-in navigator.modelContext is reported as legacy", async () => {
+  const server = await startFixtureServer();
+  const browser = await chromium.launch({ args: launchArgs() });
+  try {
+    const raw = await auditHost({ host: "fixture", urls: [`${server.url}legacy`], browser });
+    assert.equal(raw.pages[0].snapshot.tools.length, 0, "the browser sees no tools");
+    assert.equal(raw.probe.blocked, false);
+    assert.equal(raw.probe.legacy, true);
+    assert.equal(raw.probe.legacyTools, 1);
+  } finally {
+    await browser.close();
+    await server.close();
+  }
+});

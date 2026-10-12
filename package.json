@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Calls every read-only WebMCP tool in the public directory and publishes what happens.",
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test 'test/*.test.mjs'",
     "fetch": "node src/fetch-directory.mjs",
     "audit": "node src/audit-one.mjs",
     "census": "node src/run-census.mjs",
