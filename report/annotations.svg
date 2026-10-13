@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 224" width="720" height="224" role="img" aria-labelledby="t d">
   <title id="t">Share of registered tools that declare each annotation</title>
-  <desc id="d">Out of 9,095 tools seen. Source: data/summary.json tools.annotated_pct, readonly_pct, untrusted_pct, consequential_pct.</desc>
+  <desc id="d">Out of 9,149 tools seen. Source: data/summary.json tools.annotated_pct, readonly_pct, untrusted_pct, consequential_pct.</desc>
   <style>
     .surface { fill: #fcfcfb; }
     .mark { fill: #2a78d6; }
@@ -37,11 +37,11 @@
   <path class="mark" d="M194,70 H463.844 Q467.844,70 467.844,74 V84 Q467.844,88 463.844,88 H194 Z"/>
   <text class="value" x="475.844" y="83">61.4%</text>
   <text class="label" x="182" y="113" text-anchor="end">readOnlyHint</text>
-  <path class="mark" d="M194,100 H383.118 Q387.118,100 387.118,104 V114 Q387.118,118 383.118,118 H194 Z"/>
-  <text class="value" x="395.118" y="113">43.3%</text>
+  <path class="mark" d="M194,100 H382.672 Q386.672,100 386.672,104 V114 Q386.672,118 382.672,118 H194 Z"/>
+  <text class="value" x="394.672" y="113">43.2%</text>
   <text class="label" x="182" y="143" text-anchor="end">untrustedContentHint</text>
-  <path class="mark" d="M194,130 H270.28 Q274.28,130 274.28,134 V144 Q274.28,148 270.28,148 H194 Z"/>
-  <text class="value" x="282.28" y="143">18.0%</text>
+  <path class="mark" d="M194,130 H271.172 Q275.172,130 275.172,134 V144 Q275.172,148 271.172,148 H194 Z"/>
+  <text class="value" x="283.172" y="143">18.2%</text>
   <text class="label" x="182" y="173" text-anchor="end">consequentialHint</text>
   <path class="mark" d="M194,160 H196.676 Q199.352,160 199.352,162.676 V175.324 Q199.352,178 196.676,178 H194 Z"/>
   <text class="value" x="207.352" y="173">1.2%</text>

@@ -43,18 +43,18 @@
   <text class="value" x="230" y="100.15" text-anchor="middle">81.5%</text>
   <text class="label" x="230" y="324" text-anchor="middle">A</text>
   <text class="muted" x="230" y="342" text-anchor="middle">56 sites</text>
-  <circle class="dot" cx="330" cy="154.86000000000004" r="6"/>
-  <text class="value" x="330" y="140.86000000000004" text-anchor="middle">74.6%</text>
+  <circle class="dot" cx="330" cy="156.63000000000002" r="6"/>
+  <text class="value" x="330" y="142.63000000000002" text-anchor="middle">74.3%</text>
   <text class="label" x="330" y="324" text-anchor="middle">B</text>
-  <text class="muted" x="330" y="342" text-anchor="middle">129 sites</text>
+  <text class="muted" x="330" y="342" text-anchor="middle">130 sites</text>
   <circle class="dot" cx="430" cy="211.5" r="6"/>
   <text class="value" x="430" y="235.5" text-anchor="middle">65.0%</text>
   <text class="label" x="430" y="324" text-anchor="middle">C</text>
   <text class="muted" x="430" y="342" text-anchor="middle">169 sites</text>
-  <circle class="dot" cx="530" cy="181.41000000000003" r="6"/>
-  <text class="value" x="530" y="167.41000000000003" text-anchor="middle">70.1%</text>
+  <circle class="dot" cx="530" cy="183.76999999999998" r="6"/>
+  <text class="value" x="530" y="169.76999999999998" text-anchor="middle">69.7%</text>
   <text class="label" x="530" y="324" text-anchor="middle">D</text>
-  <text class="muted" x="530" y="342" text-anchor="middle">88 sites</text>
+  <text class="muted" x="530" y="342" text-anchor="middle">89 sites</text>
   <circle class="dot" cx="630" cy="217.4" r="6"/>
   <text class="value" x="630" y="241.4" text-anchor="middle">64.0%</text>
   <text class="label" x="630" y="324" text-anchor="middle">F</text>
