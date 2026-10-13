@@ -33,8 +33,8 @@
   <text class="muted" x="70" y="127" text-anchor="end">80%</text>
   <line class="grid" x1="80" x2="680" y1="64" y2="64"/>
   <text class="muted" x="70" y="68" text-anchor="end">90%</text>
-  <line class="ref" x1="80" x2="680" y1="192.03000000000003" y2="192.03000000000003"/>
-  <text class="muted" x="680" y="186.03000000000003" text-anchor="end">all sites 68.3%</text>
+  <line class="ref" x1="80" x2="680" y1="189.67" y2="189.67"/>
+  <text class="muted" x="680" y="183.67" text-anchor="end">all sites 68.7%</text>
   <circle class="dot" cx="130" cy="142.46999999999997" r="6"/>
   <text class="value" x="130" y="128.46999999999997" text-anchor="middle">76.7%</text>
   <text class="label" x="130" y="324" text-anchor="middle">A+</text>
@@ -47,8 +47,8 @@
   <text class="value" x="330" y="142.63000000000002" text-anchor="middle">74.3%</text>
   <text class="label" x="330" y="324" text-anchor="middle">B</text>
   <text class="muted" x="330" y="342" text-anchor="middle">130 sites</text>
-  <circle class="dot" cx="430" cy="211.5" r="6"/>
-  <text class="value" x="430" y="235.5" text-anchor="middle">65.0%</text>
+  <circle class="dot" cx="430" cy="194.98000000000002" r="6"/>
+  <text class="value" x="430" y="218.98000000000002" text-anchor="middle">67.8%</text>
   <text class="label" x="430" y="324" text-anchor="middle">C</text>
   <text class="muted" x="430" y="342" text-anchor="middle">169 sites</text>
   <circle class="dot" cx="530" cy="183.76999999999998" r="6"/>

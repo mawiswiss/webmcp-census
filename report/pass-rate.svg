@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 344" width="720" height="344" role="img" aria-labelledby="t d">
   <title id="t">Executed read-only tools that pass, by category</title>
-  <desc id="d">Share of executed tools that passed every valid call, per directory category. All sites: 68.3%. Source: data/summary.json by_category.tools_passed_pct.</desc>
+  <desc id="d">Share of executed tools that passed every valid call, per directory category. All sites: 68.7%. Source: data/summary.json by_category.tools_passed_pct.</desc>
   <style>
     .surface { fill: #fcfcfb; }
     .mark { fill: #2a78d6; }
@@ -40,17 +40,17 @@
   <path class="mark" d="M254,100 H530.6220000000001 Q534.6220000000001,100 534.6220000000001,104 V114 Q534.6220000000001,118 530.6220000000001,118 H254 Z"/>
   <text class="value" x="542.6220000000001" y="113">72.7%</text>
   <text class="label" x="242" y="143" text-anchor="end">AI &amp; Agents (157 sites)</text>
-  <path class="mark" d="M254,130 H517.884 Q521.884,130 521.884,134 V144 Q521.884,148 517.884,148 H254 Z"/>
-  <text class="value" x="529.884" y="143">69.4%</text>
+  <path class="mark" d="M254,130 H518.656 Q522.656,130 522.656,134 V144 Q522.656,148 518.656,148 H254 Z"/>
+  <text class="value" x="530.656" y="143">69.6%</text>
   <text class="label" x="242" y="173" text-anchor="end">Finance &amp; Crypto (81 sites)</text>
-  <path class="mark" d="M254,160 H514.024 Q518.024,160 518.024,164 V174 Q518.024,178 514.024,178 H254 Z"/>
-  <text class="value" x="526.024" y="173">68.4%</text>
+  <path class="mark" d="M254,160 H515.954 Q519.954,160 519.954,164 V174 Q519.954,178 515.954,178 H254 Z"/>
+  <text class="value" x="527.954" y="173">68.9%</text>
   <text class="label" x="242" y="203" text-anchor="end">Health &amp; Education (118 sites)</text>
   <path class="mark" d="M254,190 H502.058 Q506.058,190 506.058,194 V204 Q506.058,208 502.058,208 H254 Z"/>
   <text class="value" x="514.058" y="203">65.3%</text>
   <text class="label" x="242" y="233" text-anchor="end">Commerce (367 sites)</text>
-  <path class="mark" d="M254,220 H495.11 Q499.11,220 499.11,224 V234 Q499.11,238 495.11,238 H254 Z"/>
-  <text class="value" x="507.11" y="233">63.5%</text>
+  <path class="mark" d="M254,220 H501.28599999999994 Q505.28599999999994,220 505.28599999999994,224 V234 Q505.28599999999994,238 501.28599999999994,238 H254 Z"/>
+  <text class="value" x="513.286" y="233">65.1%</text>
   <text class="label" x="242" y="263" text-anchor="end">Developer Tools (194 sites)</text>
   <path class="mark" d="M254,250 H495.11 Q499.11,250 499.11,254 V264 Q499.11,268 495.11,268 H254 Z"/>
   <text class="value" x="507.11" y="263">63.5%</text>

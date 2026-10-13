@@ -7,8 +7,8 @@ On 13 October 2026 the census loaded the 2,964 live sites of the webmcp.com dire
 - 1,748 sites registered tools Chrome could see, 9,149 in total.
 - 933 sites the directory lists with tools registered nothing Chrome could see. 459 of the 537 sites the directory marks as using a polyfill are among them.
 - 3,842 of the 9,149 tools are labelled read-only and have no risky name like `send` or `delete`, so the census called them. They sit on 931 sites. 5,194 tools are not labelled read-only, so the census left them alone. That does not make them tools that change something: 3,529 of them carry no label at all. 35 read-only tools on 6 sites were not reached before the site's 180 s ran out.
-- Each called tool got about four calls with valid input, 15,458 in total. 85.7% of those calls came back without an error.
-- 68.3% of the 3,842 tools worked on every one of their calls. One bad call is enough to count a tool as failed: an error, a `null` in the result or a result that cannot be serialised.
+- Each called tool got one call per distinct valid input, 3.5 on average and 13,616 in total. 86.9% of those calls came back without an error.
+- 68.7% of the 3,842 tools worked on every one of their calls. One bad call is enough to count a tool as failed: an error, a `null` in the result or a result that cannot be serialised. Counting the tools whose only problem is a `null`, a made-up id the site does not know, a login or one of the generator's edge values, about 85% work.
 - 38.6% of tools carry no annotation at all. `consequentialHint` is on 1.2% of tools.
 - The most common finding: 673 sites accept input their own schema calls invalid. It does not fail a tool, and it only matters when the answer is wrong for that input.
 
