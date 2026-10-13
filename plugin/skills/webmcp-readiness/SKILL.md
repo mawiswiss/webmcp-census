@@ -1,6 +1,6 @@
 ---
 name: webmcp-readiness
-description: "Use when registering, reviewing or fixing WebMCP tools (document.modelContext.registerTool, readOnlyHint, consequentialHint, inputSchema descriptions, tool results, declarative form tools). Carries what the Q3 2026 WebMCP Census found when it called the read-only tools of 2,964 directory sites: the baseline a typical site meets, what the best sites do differently, the failure modes that break agents most often with the fix for each, and a checklist to run before a tool goes live."
+description: "Use when registering, reviewing or fixing WebMCP tools (document.modelContext.registerTool, readOnlyHint, consequentialHint, inputSchema descriptions, tool results, declarative form tools). Carries what the Q3 2026 WebMCP Census found when it called the read-only tools of 2,964 directory sites: the baseline a typical site meets, what the best sites do differently, what the audit flagged most often and which of those findings actually hurt an agent, and a checklist to run before a tool goes live."
 ---
 
 # WebMCP readiness, from the Q3 2026 census
@@ -8,6 +8,12 @@ description: "Use when registering, reviewing or fixing WebMCP tools (document.m
 From the WebMCP Census, Q3 2026, run on 13th October 2026. The latest version of this skill lives at https://github.com/mawiswiss/webmcp-census/blob/main/plugin/skills/webmcp-readiness/SKILL.md.
 
 The WebMCP Census loaded the 2,964 live sites of the webmcp.com directory in Chromium 156 with WebMCP enabled. It called the tools annotated `readOnlyHint: true` whose name has no risky word like `send` or `delete`, with inputs derived from each tool's own schema. 1,748 sites registered tools the browser could see, 9,149 tools in total. 3,842 of them qualified and were called, on 931 sites. Tools without `readOnlyHint` were left alone, which does not make them tools that change something: 3,529 tools carry no annotation at all. Each called tool got about four calls with valid input, 15,458 in total, and 85.7% of those calls returned without an error. 68.3% of the called tools passed every one of their calls, because one error, `null` or unserialisable result fails the tool. The numbers below come from the census data files [`summary.json`](https://github.com/mawiswiss/webmcp-census/blob/main/data/summary.json) and [`learnings.json`](https://github.com/mawiswiss/webmcp-census/blob/main/data/learnings.json).
+
+## How to read the findings
+
+The census counts what the rules of [@swissspidy/webmcp-audit](https://www.npmjs.com/package/@swissspidy/webmcp-audit) flag. A rule is a test with its own thresholds, not proof that an agent got a worse answer. Only three findings fail a tool in the census: an error on valid input, `null` in the result, and a result that cannot be serialised. Two of the most common findings do not: input the schema calls invalid, and results over 1,500 characters.
+
+Before changing a working tool to clear a finding, check that an agent gets a better answer afterwards. Do not add schema constraints only to steer the audit's input generator, do not reject input that used to work, and do not cut answers to fit a character budget.
 
 ## Make the tools visible first
 
@@ -40,7 +46,7 @@ Comparing the 454 sites where every called tool passed with the 477 where at lea
 
 Annotations do not separate the groups: both annotate about nine in ten tools. Treat this as a description of good sites, not a recipe.
 
-## Failure modes, most common first
+## What the audit flagged, most common first
 
 ### Annotations missing (959 sites, 3,529 tools)
 
@@ -61,12 +67,16 @@ document.modelContext.registerTool({ name: "cancel_order", description, inputSch
 
 ### Invalid input accepted (673 sites)
 
-The tool answers a number where a string belongs, or a value outside its enum, as if nothing happened. The agent never learns it made a mistake.
+The tool answers input its own schema calls invalid, such as a number where a string belongs or a value outside its enum. This does not fail a tool in the census, and it only hurts when the answer is wrong for that input. A filter value the tool silently ignores returns unfiltered results that look filtered. A `limit` of `"10"` read as 10 harms nobody.
+
+Reject input that would give a wrong answer, with an error that names the valid values. Coerce harmless mismatches, and treat `null` as omitted, because some clients send it to mean "leave this out".
 
 ```js
-execute: async ({ limit }) => {
-  if (!Number.isInteger(limit) || limit < 1 || limit > 50) throw new Error("limit must be an integer from 1 to 50");
-  return search({ limit });
+execute: async ({ status, limit }) => {
+  if (status != null && !STATUSES.includes(status)) throw new Error(`status must be one of: ${STATUSES.join(", ")}`);
+  const n = limit == null ? 20 : Number(limit);
+  if (!Number.isInteger(n) || n < 1) throw new Error("limit must be a whole number from 1");
+  return search({ status: status ?? undefined, limit: n });
 },
 ```
 
@@ -80,22 +90,25 @@ After: `checkIn: { type: "string", format: "date", description: "Arrival date as
 
 ### Results over 1,500 characters (569 sites)
 
-Long results eat the agent's context. Return a page and a way to the next one.
+The audit's budget is 1,500 characters, set for a small model's context window. It does not fail a tool in the census. For the cloud agents most likely to call a tool, 3,000 characters is roughly 750 tokens, and a complete answer is usually the better one.
+
+Put the most important data first, so a cut, if one is needed, loses the least. Page long lists with a modest default, the total and a way to the next page. Never cut an answer alphabetically, never hide items behind "and 14 more" without a way to fetch them, and do not stack a hard maximum on top of a character budget.
 
 ```js
-execute: async ({ query, offset = 0 }) => {
-  const items = await search(query);
-  return { items: items.slice(offset, offset + 10), total: items.length, nextOffset: offset + 10 < items.length ? offset + 10 : undefined };
+execute: async ({ query, offset = 0, limit = 25 }) => {
+  const items = (await search(query)).sort((a, b) => b.relevance - a.relevance);
+  const next = offset + limit < items.length ? offset + limit : undefined;
+  return { items: items.slice(offset, offset + limit), total: items.length, nextOffset: next };
 },
 ```
 
 ### Errors on valid input (358 sites)
 
-A schema-valid call throws or reports an error, for example because a backend is down or the schema allows inputs the backend refuses. Make the schema as strict as the backend, and test every tool with its own example inputs.
+A schema-valid call throws or reports an error, for example because a backend is down or the schema allows inputs the backend refuses. This fails a tool. Declare the constraints that are true for the tool, such as `minLength: 1` when an empty query means nothing, and test every tool with its own example inputs. A constraint that is not true, like a `maxLength` on every string, only steers the audit's generator.
 
 ### `null` in results (212 sites)
 
-According to the audit engine's own rule, Chrome's Prompt API rejects `null`, so the call can fail on the agent's side although the site answered. Fixing this alone would flip 382 failing tools to passing.
+According to the audit engine's own rule, Chrome's Prompt API rejects `null`, so the call can fail on the agent's side although the site answered. This fails a tool, and fixing it alone would flip 382 failing tools to passing. Fix it where the tool can really return `null`, for example from a missing field in the data. A guard for a value your own code never sets to `null` adds nothing.
 
 Before: `return { name: product.name, price: product.price };`
 
@@ -103,7 +116,7 @@ After: `return { name: product.name, ...(product.price != null && { price: produ
 
 ### Descriptions too short or too long (203 sites)
 
-Write 20 to 600 characters that say what the tool does and when to call it.
+The audit's range is 20 to 600 characters. Say what the tool does and when to call it.
 
 ### JSON returned as a string (173 sites)
 
@@ -141,6 +154,6 @@ Share of the 1,748 sites with tools:
 - Every input property has a description. No `$ref`, `oneOf`, `anyOf` or `allOf`.
 - `readOnlyHint: true` only if the tool sends no POST, PUT, PATCH or DELETE that changes state and does not navigate. `consequentialHint: true` on every tool that acts.
 - `untrustedContentHint: true` when the result carries text written by users or third parties.
-- Results are objects, never `null` anywhere, never JSON inside a string, under 1,500 characters.
-- Valid input returns in under 8 seconds. Invalid input throws.
-- Tested from the outside: `npx @swissspidy/webmcp-audit https://staging.example --smoke`, or `npx lighthouse https://staging.example --only-categories=agentic-browsing`.
+- Results are objects, without `null` where the tool can produce it, never JSON inside a string. Complete, with the most important data first. Long lists page with a modest default, the total and a way to the next page.
+- Valid input returns in under 8 seconds. Input that would give a wrong answer throws, with the valid values in the error. Harmless mismatches, such as `"10"` for 10 or `null` for an omitted field, are accepted.
+- Tested from the outside: `npx @swissspidy/webmcp-audit https://staging.example --smoke`, or `npx lighthouse https://staging.example --only-categories=agentic-browsing`. Read their warnings as questions, not orders.
