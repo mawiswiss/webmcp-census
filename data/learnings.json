@@ -1,0 +1,389 @@
+{
+  "generatedAt": "2026-10-13T09:24:36.248Z",
+  "baseline": {
+    "sites": 1740,
+    "tools_seen": 4,
+    "annotated_share": 71.4,
+    "readonly_share": 33.3,
+    "consequential_share": 0,
+    "untrusted_share": 0,
+    "desc_len_median": 191.25,
+    "params_described_pct": 100,
+    "lint_errors_per_tool": 0,
+    "act_share": 14.3,
+    "pass_rate_median": 87.5
+  },
+  "top_vs_rest": {
+    "top_sites": 93,
+    "rest_sites": 834,
+    "top_hosts": [
+      "4over4.com",
+      "argos-ci.com",
+      "consequence-webmcp.ashrafahmed1232.workers.dev",
+      "practicehub.ludara.org",
+      "relay-webmcp.ashrafahmed1232.workers.dev",
+      "auhekids.com.br",
+      "brcondos.com.br",
+      "centraldavisao.com.br",
+      "cesium-browser-agent.pages.dev",
+      "chrissaautomates.com",
+      "conexa.app",
+      "globalthings.net",
+      "goodwhale.withwind.tw",
+      "gptw.com.br",
+      "hotelranque.com",
+      "infomach.com.br",
+      "leaderfactor.com",
+      "nayax.com.br",
+      "plymove.com",
+      "recantoalvorada.com.br",
+      "tidypro.withwind.tw",
+      "uniplasti.com.br",
+      "buyandrentrobots.com",
+      "portaldogremista.com.br",
+      "scvd.store",
+      "tallyfy.com",
+      "customware.ai",
+      "drevenica.sk",
+      "emorahealth.com",
+      "getfreightbox.com",
+      "jezersko.sk",
+      "juicysantos.com.br",
+      "maikel-szymanski.de",
+      "media-company.eu",
+      "okhten.com",
+      "originalnadrevenica.sk",
+      "panwybierak.pl",
+      "playground.wordpress.net",
+      "aicertificates.study",
+      "barbarabeers.com",
+      "bikesandbacon.com",
+      "cheers.tech",
+      "coinvela.com",
+      "docs.getsuperbee.com",
+      "e-esim.com",
+      "esim-global.vip",
+      "every.ai",
+      "farahsolutions.ae",
+      "fiorlaw.com",
+      "ibipoint.com",
+      "muretai.com",
+      "naia.today",
+      "nemoai.uk",
+      "qanode.com",
+      "sasi.codes",
+      "suggestapi.com",
+      "thaiworld.pl",
+      "tweaktown.com",
+      "abierto.us",
+      "considus.com",
+      "cookieyes.com",
+      "dellight.ai",
+      "ejaj.cz",
+      "heewon.yonza.co.kr",
+      "ibest.tw",
+      "mishimoto.com",
+      "peskio.com",
+      "pixelik.com",
+      "protofire.io",
+      "slbeauty.it",
+      "tecet.net",
+      "vantainsights.com",
+      "waynesutton.ai",
+      "zapier.com",
+      "3.14financialcontents.com",
+      "adspirer.com",
+      "arbatov.dev",
+      "ativiajes.com",
+      "atwork.so",
+      "catchlight.app",
+      "digitalmirror.ca",
+      "dng.ai",
+      "docswrite.com",
+      "fenixbegravning.se",
+      "forwardemail.net",
+      "gillettevenus.de",
+      "gillettevenus.es",
+      "gillettevenus.fr",
+      "gillettevenus.it",
+      "idfmetale.pl",
+      "mabbs.github.io",
+      "marketintell.ai",
+      "motonline.com.br"
+    ],
+    "traits": {
+      "tools_seen": {
+        "top": 10.38,
+        "rest": 6.09
+      },
+      "annotated_share": {
+        "top": 94.96,
+        "rest": 90.43
+      },
+      "readonly_share": {
+        "top": 83.59,
+        "rest": 73
+      },
+      "consequential_share": {
+        "top": 1.46,
+        "rest": 1.29
+      },
+      "untrusted_share": {
+        "top": 25.51,
+        "rest": 24.58
+      },
+      "desc_len_median": {
+        "top": 209.04,
+        "rest": 296.95
+      },
+      "params_described_pct": {
+        "top": 88.87,
+        "rest": 83.64
+      },
+      "lint_errors_per_tool": {
+        "top": 0,
+        "rest": 0.01
+      },
+      "act_share": {
+        "top": 22.3,
+        "rest": 31.19
+      },
+      "pass_rate": {
+        "top": 1,
+        "rest": 0.67
+      }
+    }
+  },
+  "gaps": {
+    "rules_by_sites": [
+      {
+        "rule": "result-accepts-invalid-input",
+        "findings": 6651,
+        "sites": 671
+      },
+      {
+        "rule": "param-description-missing",
+        "findings": 9766,
+        "sites": 573
+      },
+      {
+        "rule": "result-too-large",
+        "findings": 3494,
+        "sites": 567
+      },
+      {
+        "rule": "capability-trifecta",
+        "findings": 861,
+        "sites": 480
+      },
+      {
+        "rule": "result-error-on-valid-input",
+        "findings": 3533,
+        "sites": 356
+      },
+      {
+        "rule": "result-writes-cross-origin",
+        "findings": 3396,
+        "sites": 320
+      },
+      {
+        "rule": "naming-consistency",
+        "findings": 558,
+        "sites": 259
+      },
+      {
+        "rule": "param-description-length",
+        "findings": 1462,
+        "sites": 235
+      },
+      {
+        "rule": "result-contains-null",
+        "findings": 1380,
+        "sites": 210
+      },
+      {
+        "rule": "description-length",
+        "findings": 707,
+        "sites": 203
+      },
+      {
+        "rule": "result-writes",
+        "findings": 4265,
+        "sites": 195
+      },
+      {
+        "rule": "result-string-json",
+        "findings": 1022,
+        "sites": 173
+      },
+      {
+        "rule": "similar-descriptions",
+        "findings": 1012,
+        "sites": 93
+      },
+      {
+        "rule": "schema-unsupported-keywords",
+        "findings": 4281,
+        "sites": 90
+      },
+      {
+        "rule": "result-navigates",
+        "findings": 213,
+        "sites": 61
+      }
+    ],
+    "unannotated_tools_pct": 38.6,
+    "sites_without_act_tools_pct": 47.5,
+    "sites_with_single_tool_pct": 14.1,
+    "weakest_categories": [
+      {
+        "category": "Travel & Events",
+        "sites": 325,
+        "tools_seen": 1549,
+        "tools_executed": 328,
+        "tools_passed_pct": 58.5,
+        "sites_with_readonly_writes": 33
+      },
+      {
+        "category": "Developer Tools",
+        "sites": 194,
+        "tools_seen": 902,
+        "tools_executed": 466,
+        "tools_passed_pct": 63.5,
+        "sites_with_readonly_writes": 19
+      },
+      {
+        "category": "Commerce",
+        "sites": 364,
+        "tools_seen": 2222,
+        "tools_executed": 887,
+        "tools_passed_pct": 63.6,
+        "sites_with_readonly_writes": 56
+      }
+    ],
+    "strongest_categories": [
+      {
+        "category": "Productivity & Business",
+        "sites": 323,
+        "tools_seen": 1643,
+        "tools_executed": 735,
+        "tools_passed_pct": 79.2,
+        "sites_with_readonly_writes": 30
+      },
+      {
+        "category": "Media & Personal",
+        "sites": 178,
+        "tools_seen": 824,
+        "tools_executed": 425,
+        "tools_passed_pct": 72.7,
+        "sites_with_readonly_writes": 12
+      },
+      {
+        "category": "AI & Agents",
+        "sites": 157,
+        "tools_seen": 1032,
+        "tools_executed": 519,
+        "tools_passed_pct": 69.4,
+        "sites_with_readonly_writes": 23
+      }
+    ]
+  },
+  "low_hanging_fruits": [
+    {
+      "rule": "annotations-missing",
+      "fix": "Declare readOnlyHint on every tool that only reads, and consequentialHint on every tool that acts.",
+      "sites": 954,
+      "findings": 3511,
+      "tools_flipped": null
+    },
+    {
+      "rule": "result-accepts-invalid-input",
+      "fix": "Validate input against your own schema and throw on a mismatch.",
+      "sites": 671,
+      "findings": 6651,
+      "tools_flipped": null
+    },
+    {
+      "rule": "param-description-missing",
+      "fix": "Add a description to every input property.",
+      "sites": 573,
+      "findings": 9766,
+      "tools_flipped": null
+    },
+    {
+      "rule": "result-too-large",
+      "fix": "Cap the result at 1,500 characters: paginate or summarise.",
+      "sites": 567,
+      "findings": 3494,
+      "tools_flipped": null
+    },
+    {
+      "rule": "result-contains-null",
+      "fix": "Return an empty string, 0 or an empty array instead of null.",
+      "sites": 210,
+      "findings": 1380,
+      "tools_flipped": 376
+    },
+    {
+      "rule": "description-length",
+      "fix": "Write 20 to 600 characters that say what the tool does and when to call it.",
+      "sites": 203,
+      "findings": 707,
+      "tools_flipped": null
+    },
+    {
+      "rule": "result-string-json",
+      "fix": "Return the object, not JSON inside a string.",
+      "sites": 173,
+      "findings": 1022,
+      "tools_flipped": null
+    },
+    {
+      "rule": "schema-unsupported-keywords",
+      "fix": "Flatten $ref, oneOf, anyOf and allOf into plain object schemas.",
+      "sites": 90,
+      "findings": 4281,
+      "tools_flipped": null
+    },
+    {
+      "rule": "legacy-surface",
+      "fix": "Register on document.modelContext. Chrome 156 has no navigator.modelContext, so tools put there reach no agent.",
+      "sites": 28,
+      "findings": 135,
+      "tools_flipped": null
+    },
+    {
+      "rule": "result-undefined",
+      "fix": "Return an object, even an empty one.",
+      "sites": 0,
+      "findings": 0,
+      "tools_flipped": null
+    }
+  ],
+  "next_things": {
+    "declarative_forms": {
+      "sites": 265,
+      "pct": 15.2
+    },
+    "consequential_hint": {
+      "sites": 49,
+      "pct": 2.8
+    },
+    "untrusted_content_hint": {
+      "sites": 355,
+      "pct": 20.4
+    },
+    "cross_origin_exposure": {
+      "sites": 0,
+      "pct": 0
+    },
+    "tool_titles": {
+      "sites": 424,
+      "pct": 24.4
+    },
+    "act_tools": {
+      "sites": 913,
+      "pct": 52.5
+    }
+  }
+}

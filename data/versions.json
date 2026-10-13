@@ -1,0 +1,14 @@
+{
+  "audit": "0.3.0",
+  "engine": "0.3.0",
+  "chromium": "156.0.8078.4",
+  "playwright": "1.64.0",
+  "node": "v24.11.1",
+  "callLimitMs": 20000,
+  "budgetMs": 180000,
+  "loadTimeoutMs": 15000,
+  "directoryFetchedAt": "2026-10-12T07:06:41.263Z",
+  "firstAudit": "2026-10-13T03:54:19.719Z",
+  "lastAudit": "2026-10-13T08:28:23.994Z",
+  "hosts": 2945
+}

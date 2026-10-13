@@ -1,0 +1,332 @@
+{
+  "generatedAt": "2026-10-13T09:24:36.212Z",
+  "sites": {
+    "total": 2964,
+    "scanned": 2945,
+    "tools": 1740,
+    "no_tools": 920,
+    "blocked": 184,
+    "error": 101,
+    "skipped": 19,
+    "with_calls": 927,
+    "nothing_to_call": 813
+  },
+  "directory_claimed_by_status": {
+    "tools": 9064,
+    "skipped": 92,
+    "no-tools": 3437,
+    "blocked": 684,
+    "error": 585
+  },
+  "by_api_surface": {
+    "spec": {
+      "tools": 1635,
+      "skipped": 16,
+      "blocked": 163,
+      "no-tools": 447,
+      "error": 71
+    },
+    "polyfill": {
+      "no-tools": 453,
+      "error": 26,
+      "skipped": 3,
+      "blocked": 18,
+      "tools": 37
+    },
+    "mixed": {
+      "tools": 68,
+      "blocked": 3,
+      "error": 4,
+      "no-tools": 20
+    }
+  },
+  "tools": {
+    "seen": 9095,
+    "directory_claimed": 9064,
+    "imperative_pct": 95.7,
+    "annotated_pct": 61.4,
+    "readonly_pct": 43.3,
+    "consequential_pct": 1.2,
+    "untrusted_pct": 18,
+    "executed": 3827,
+    "passed_pct": 68.3
+  },
+  "runs": {
+    "valid": 15387,
+    "valid_ok_pct": 85.6
+  },
+  "sites_with_lint_errors": 38,
+  "sites_with_readonly_writes": 195,
+  "sites_posting": {
+    "any": 195,
+    "mcp": 46,
+    "analytics": 51,
+    "other": 111
+  },
+  "sites_legacy_surface": 28,
+  "sites_with_unfinished_tools": 5,
+  "rules": {
+    "tool-name-valid": {
+      "findings": 0,
+      "sites": 0
+    },
+    "tool-name-style": {
+      "findings": 0,
+      "sites": 0
+    },
+    "tool-title-missing": {
+      "findings": 0,
+      "sites": 0
+    },
+    "description-missing": {
+      "findings": 0,
+      "sites": 0
+    },
+    "description-length": {
+      "findings": 707,
+      "sites": 203
+    },
+    "description-when-to-use": {
+      "findings": 0,
+      "sites": 0
+    },
+    "param-description-missing": {
+      "findings": 9766,
+      "sites": 573
+    },
+    "param-description-length": {
+      "findings": 1462,
+      "sites": 235
+    },
+    "schema-shape": {
+      "findings": 0,
+      "sites": 0
+    },
+    "schema-no-null-literals": {
+      "findings": 20,
+      "sites": 6
+    },
+    "schema-depth": {
+      "findings": 86,
+      "sites": 49
+    },
+    "schema-unsupported-keywords": {
+      "findings": 4281,
+      "sites": 90
+    },
+    "sensitive-params": {
+      "findings": 123,
+      "sites": 51
+    },
+    "duplicate-tool-name": {
+      "findings": 9,
+      "sites": 3
+    },
+    "similar-descriptions": {
+      "findings": 1012,
+      "sites": 93
+    },
+    "too-many-tools": {
+      "findings": 34,
+      "sites": 26
+    },
+    "declarative-description": {
+      "findings": 5,
+      "sites": 1
+    },
+    "declarative-field-description": {
+      "findings": 59,
+      "sites": 28
+    },
+    "declarative-autosubmit-sensitive": {
+      "findings": 0,
+      "sites": 0
+    },
+    "description-injection": {
+      "findings": 71,
+      "sites": 28
+    },
+    "naming-consistency": {
+      "findings": 558,
+      "sites": 259
+    },
+    "exposed-to-secure-origins": {
+      "findings": 0,
+      "sites": 0
+    },
+    "exposed-to-origin-only": {
+      "findings": 0,
+      "sites": 0
+    },
+    "annotations-explicit": {
+      "findings": 0,
+      "sites": 0
+    },
+    "capability-trifecta": {
+      "findings": 861,
+      "sites": 480
+    },
+    "tool-shadowing": {
+      "findings": 0,
+      "sites": 0
+    },
+    "third-party-registration": {
+      "findings": 0,
+      "sites": 0
+    },
+    "result-error-on-valid-input": {
+      "findings": 3533,
+      "sites": 356
+    },
+    "result-contains-null": {
+      "findings": 1380,
+      "sites": 210
+    },
+    "result-not-serializable": {
+      "findings": 0,
+      "sites": 0
+    },
+    "result-undefined": {
+      "findings": 0,
+      "sites": 0
+    },
+    "result-too-large": {
+      "findings": 3494,
+      "sites": 567
+    },
+    "result-slow": {
+      "findings": 53,
+      "sites": 28
+    },
+    "result-accepts-invalid-input": {
+      "findings": 6651,
+      "sites": 671
+    },
+    "result-string-json": {
+      "findings": 1022,
+      "sites": 173
+    },
+    "result-suspicious-content": {
+      "findings": 156,
+      "sites": 9
+    },
+    "result-navigates": {
+      "findings": 213,
+      "sites": 61
+    },
+    "result-writes": {
+      "findings": 4265,
+      "sites": 195
+    },
+    "result-writes-cross-origin": {
+      "findings": 3396,
+      "sites": 320
+    },
+    "untrusted-content-unmarked": {
+      "findings": 168,
+      "sites": 17
+    }
+  },
+  "by_category": {
+    "AI & Agents": {
+      "sites": 157,
+      "tools_seen": 1032,
+      "tools_executed": 519,
+      "tools_passed_pct": 69.4,
+      "sites_with_readonly_writes": 23
+    },
+    "Commerce": {
+      "sites": 364,
+      "tools_seen": 2222,
+      "tools_executed": 887,
+      "tools_passed_pct": 63.6,
+      "sites_with_readonly_writes": 56
+    },
+    "Developer Tools": {
+      "sites": 194,
+      "tools_seen": 902,
+      "tools_executed": 466,
+      "tools_passed_pct": 63.5,
+      "sites_with_readonly_writes": 19
+    },
+    "Finance & Crypto": {
+      "sites": 81,
+      "tools_seen": 333,
+      "tools_executed": 196,
+      "tools_passed_pct": 68.4,
+      "sites_with_readonly_writes": 5
+    },
+    "Health & Education": {
+      "sites": 118,
+      "tools_seen": 590,
+      "tools_executed": 271,
+      "tools_passed_pct": 65.3,
+      "sites_with_readonly_writes": 17
+    },
+    "Media & Personal": {
+      "sites": 178,
+      "tools_seen": 824,
+      "tools_executed": 425,
+      "tools_passed_pct": 72.7,
+      "sites_with_readonly_writes": 12
+    },
+    "Productivity & Business": {
+      "sites": 323,
+      "tools_seen": 1643,
+      "tools_executed": 735,
+      "tools_passed_pct": 79.2,
+      "sites_with_readonly_writes": 30
+    },
+    "Travel & Events": {
+      "sites": 325,
+      "tools_seen": 1549,
+      "tools_executed": 328,
+      "tools_passed_pct": 58.5,
+      "sites_with_readonly_writes": 33
+    }
+  },
+  "by_ora_grade": {
+    "A+": {
+      "sites": 24,
+      "tools_seen": 121,
+      "tools_executed": 60,
+      "tools_passed_pct": 76.7,
+      "sites_with_readonly_writes": 6
+    },
+    "A": {
+      "sites": 56,
+      "tools_seen": 230,
+      "tools_executed": 81,
+      "tools_passed_pct": 81.5,
+      "sites_with_readonly_writes": 6
+    },
+    "B": {
+      "sites": 129,
+      "tools_seen": 627,
+      "tools_executed": 295,
+      "tools_passed_pct": 74.6,
+      "sites_with_readonly_writes": 17
+    },
+    "C": {
+      "sites": 169,
+      "tools_seen": 994,
+      "tools_executed": 488,
+      "tools_passed_pct": 65,
+      "sites_with_readonly_writes": 21
+    },
+    "D": {
+      "sites": 88,
+      "tools_seen": 604,
+      "tools_executed": 278,
+      "tools_passed_pct": 70.1,
+      "sites_with_readonly_writes": 8
+    },
+    "F": {
+      "sites": 22,
+      "tools_seen": 117,
+      "tools_executed": 25,
+      "tools_passed_pct": 64,
+      "sites_with_readonly_writes": 1
+    }
+  }
+}
