@@ -25,13 +25,15 @@ test("baseline is the median over sites with tools and ignores the rest", () => 
   assert.equal(b.desc_len_median, 40);
 });
 
-test("topVsRest puts the best pass rate in the top decile and compares traits", () => {
+test("topVsRest compares sites where every called tool passed with sites where one failed", () => {
   const t = topVsRest(rows);
-  assert.equal(t.top_sites, 1);
-  assert.deepEqual(t.top_hosts, ["best.example"]);
-  assert.equal(t.rest_sites, 9);
+  assert.match(t.definition, /every executed tool passed/);
+  assert.equal(t.top_sites, 4);
+  assert.equal(t.rest_sites, 6);
+  assert.deepEqual(t.top_hosts, ["best.example", "site1.example", "site3.example", "site5.example"]);
   assert.equal(t.traits.pass_rate.top, 1);
-  assert.equal(t.traits.desc_len_median.top, 120);
+  assert.equal(t.traits.pass_rate.rest, 0.42);
+  assert.equal(t.traits.desc_len_median.top, 60);
   assert.ok(t.traits.annotated_share.top > t.traits.annotated_share.rest);
 });
 

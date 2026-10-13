@@ -26,15 +26,20 @@ export function baseline(rows) {
   return out;
 }
 
-export function topVsRest(rows, decile = 0.1) {
-  const ranked = rows.filter((r) => r.tools_executed > 0).sort((a, b) => passRate(b) - passRate(a) || b.tools_executed - a.tools_executed);
-  const n = Math.max(1, Math.round(ranked.length * decile));
-  const top = ranked.slice(0, n);
-  const rest = ranked.slice(n);
+export function topVsRest(rows) {
+  const called = rows.filter((r) => r.tools_executed > 0);
+  const top = called.filter((r) => r.tools_passed === r.tools_executed).sort((a, b) => b.tools_executed - a.tools_executed);
+  const rest = called.filter((r) => r.tools_passed < r.tools_executed);
   const traits = {};
   for (const [k, f] of Object.entries(TRAITS)) traits[k] = { top: mean(top.map(f)), rest: mean(rest.map(f)) };
   traits.pass_rate = { top: mean(top.map(passRate)), rest: mean(rest.map(passRate)) };
-  return { top_sites: n, rest_sites: rest.length, top_hosts: top.map((r) => r.host), traits };
+  return {
+    definition: "top: sites where every executed tool passed; rest: sites where at least one executed tool failed",
+    top_sites: top.length,
+    rest_sites: rest.length,
+    top_hosts: top.map((r) => r.host),
+    traits,
+  };
 }
 
 const CHEAP = {
