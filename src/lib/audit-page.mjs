@@ -22,7 +22,7 @@ export function countBySeverity(findings) {
   return counts;
 }
 
-export async function auditPage(browser, url, { settleMs = 1500, callLimitMs = 20_000, loadTimeoutMs = 15_000, snapshotTimeoutMs = 20_000, deadline = Infinity, smokeOptions = {} } = {}) {
+export async function auditPage(browser, url, { settleMs = 1500, callLimitMs = 20_000, loadTimeoutMs = 15_000, snapshotTimeoutMs = 20_000, deadline = Infinity, smokeOptions = {}, called = new Set() } = {}) {
   debug("page", url);
   const context = await browser.newContext(CONTEXT_OPTIONS);
   const page = await context.newPage();
@@ -64,12 +64,12 @@ export async function auditPage(browser, url, { settleMs = 1500, callLimitMs = 2
     // A call is routed by name alone, so a name whose copies disagree on being safe is never called.
     const choose = selectableIn(snapshot.tools, smokeOptions.tools);
     const { selected, skipped } = selectSmokeTools(snapshot.tools, { ...smokeOptions, tools: choose });
-    const called = new Set();
+    const calledBefore = new Set(called);
     const smoke = { runs: [], findings: [], counts: {}, skipped: skipped.map((t) => t.name), unfinished: [] };
     for (const [i, tool] of selected.entries()) {
       if (called.has(tool.name)) continue;
       called.add(tool.name);
-      const left = () => selected.slice(i).map((t) => t.name);
+      const left = () => selected.slice(i).map((t) => t.name).filter((name) => !calledBefore.has(name));
       if (Date.now() > deadline) {
         smoke.unfinished.push(...left());
         break;

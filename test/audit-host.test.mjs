@@ -104,3 +104,19 @@ test("a page whose main thread never answers is recorded as an error within the 
     await server.close();
   }
 });
+
+test("a tool listed on several pages of a site is called on the first page only", async () => {
+  const server = await startFixtureServer();
+  const browser = await chromium.launch({ args: launchArgs() });
+  try {
+    const raw = await auditHost({ host: "fixture", urls: [server.url, `${server.url}second`], browser, callLimitMs: 1500 });
+    const [first, second] = raw.pages;
+    assert.ok(first.smoke.runs.some((r) => r.tool === "get_time"), "called on the first page");
+    assert.ok(second.snapshot.tools.some((t) => t.name === "get_time"), "the second page registers it too");
+    assert.equal(second.smoke.runs.length, 0, "no tool is called a second time");
+    assert.equal(second.smoke.unfinished.length, 0, "tools called before are not listed as unfinished");
+  } finally {
+    await browser.close();
+    await server.close();
+  }
+});

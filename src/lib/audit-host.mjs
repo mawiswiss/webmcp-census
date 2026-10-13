@@ -19,6 +19,7 @@ export function launchArgs() {
 
 export async function auditHost({ host, urls, browser, callLimitMs = 20_000, budgetMs = 180_000, loadTimeoutMs = 15_000, snapshotTimeoutMs = 20_000, probeTimeoutMs = 60_000 }) {
   const deadline = Date.now() + budgetMs;
+  const called = new Set();
   const pages = [];
   for (const url of urls) {
     const result = await auditPage(browser, url, {
@@ -27,6 +28,7 @@ export async function auditHost({ host, urls, browser, callLimitMs = 20_000, bud
       loadTimeoutMs,
       snapshotTimeoutMs,
       deadline,
+      called,
       smokeOptions: { tools: selectTool, maxDurationMs: 8000, ignoreRequests: isGraphqlRead },
     });
     pages.push(stripPage(result));
