@@ -1,70 +1,70 @@
 {
-  "generatedAt": "2026-10-13T09:24:36.212Z",
+  "generatedAt": "2026-10-13T10:18:36.896Z",
   "sites": {
     "total": 2964,
-    "scanned": 2945,
-    "tools": 1740,
-    "no_tools": 920,
-    "blocked": 184,
-    "error": 101,
-    "skipped": 19,
-    "with_calls": 927,
-    "nothing_to_call": 813
+    "scanned": 2943,
+    "tools": 1748,
+    "no_tools": 933,
+    "blocked": 192,
+    "error": 70,
+    "skipped": 21,
+    "with_calls": 931,
+    "nothing_to_call": 817
   },
   "directory_claimed_by_status": {
-    "tools": 9064,
-    "skipped": 92,
-    "no-tools": 3437,
-    "blocked": 684,
-    "error": 585
+    "tools": 9118,
+    "skipped": 103,
+    "no-tools": 3526,
+    "blocked": 746,
+    "error": 369
   },
   "by_api_surface": {
     "spec": {
-      "tools": 1635,
-      "skipped": 16,
-      "blocked": 163,
-      "no-tools": 447,
-      "error": 71
+      "tools": 1641,
+      "skipped": 18,
+      "blocked": 167,
+      "no-tools": 454,
+      "error": 52
     },
     "polyfill": {
-      "no-tools": 453,
-      "error": 26,
+      "no-tools": 459,
+      "error": 16,
       "skipped": 3,
-      "blocked": 18,
+      "blocked": 22,
       "tools": 37
     },
     "mixed": {
-      "tools": 68,
+      "tools": 70,
       "blocked": 3,
-      "error": 4,
-      "no-tools": 20
+      "no-tools": 20,
+      "error": 2
     }
   },
   "tools": {
-    "seen": 9095,
-    "directory_claimed": 9064,
+    "seen": 9149,
+    "directory_claimed": 9118,
     "imperative_pct": 95.7,
     "annotated_pct": 61.4,
-    "readonly_pct": 43.3,
+    "readonly_pct": 43.2,
     "consequential_pct": 1.2,
-    "untrusted_pct": 18,
-    "executed": 3827,
+    "untrusted_pct": 18.2,
+    "executed": 3842,
     "passed_pct": 68.3
   },
   "runs": {
-    "valid": 15387,
-    "valid_ok_pct": 85.6
+    "valid": 15458,
+    "valid_ok_pct": 85.7
   },
   "sites_with_lint_errors": 38,
-  "sites_with_readonly_writes": 195,
+  "sites_with_readonly_writes": 196,
   "sites_posting": {
-    "any": 195,
+    "any": 196,
     "mcp": 46,
     "analytics": 51,
-    "other": 111
+    "other": 112
   },
   "sites_legacy_surface": 28,
-  "sites_with_unfinished_tools": 5,
+  "sites_with_unfinished_tools": 6,
   "rules": {
     "tool-name-valid": {
       "findings": 0,
@@ -91,12 +91,12 @@
       "sites": 0
     },
     "param-description-missing": {
-      "findings": 9766,
-      "sites": 573
+      "findings": 9830,
+      "sites": 577
     },
     "param-description-length": {
-      "findings": 1462,
-      "sites": 235
+      "findings": 1463,
+      "sites": 236
     },
     "schema-shape": {
       "findings": 0,
@@ -111,8 +111,8 @@
       "sites": 49
     },
     "schema-unsupported-keywords": {
-      "findings": 4281,
-      "sites": 90
+      "findings": 4282,
+      "sites": 91
     },
     "sensitive-params": {
       "findings": 123,
@@ -123,8 +123,8 @@
       "sites": 3
     },
     "similar-descriptions": {
-      "findings": 1012,
-      "sites": 93
+      "findings": 1015,
+      "sites": 95
     },
     "too-many-tools": {
       "findings": 34,
@@ -147,8 +147,8 @@
       "sites": 28
     },
     "naming-consistency": {
-      "findings": 558,
-      "sites": 259
+      "findings": 562,
+      "sites": 261
     },
     "exposed-to-secure-origins": {
       "findings": 0,
@@ -163,8 +163,8 @@
       "sites": 0
     },
     "capability-trifecta": {
-      "findings": 861,
-      "sites": 480
+      "findings": 863,
+      "sites": 482
     },
     "tool-shadowing": {
       "findings": 0,
@@ -175,12 +175,12 @@
       "sites": 0
     },
     "result-error-on-valid-input": {
-      "findings": 3533,
-      "sites": 356
+      "findings": 3538,
+      "sites": 358
     },
     "result-contains-null": {
-      "findings": 1380,
-      "sites": 210
+      "findings": 1402,
+      "sites": 212
     },
     "result-not-serializable": {
       "findings": 0,
@@ -191,16 +191,16 @@
       "sites": 0
     },
     "result-too-large": {
-      "findings": 3494,
-      "sites": 567
+      "findings": 3502,
+      "sites": 569
     },
     "result-slow": {
-      "findings": 53,
-      "sites": 28
+      "findings": 54,
+      "sites": 29
     },
     "result-accepts-invalid-input": {
-      "findings": 6651,
-      "sites": 671
+      "findings": 6701,
+      "sites": 673
     },
     "result-string-json": {
       "findings": 1022,
@@ -215,12 +215,12 @@
       "sites": 61
     },
     "result-writes": {
-      "findings": 4265,
-      "sites": 195
+      "findings": 4273,
+      "sites": 196
     },
     "result-writes-cross-origin": {
-      "findings": 3396,
-      "sites": 320
+      "findings": 3506,
+      "sites": 321
     },
     "untrusted-content-unmarked": {
       "findings": 168,
@@ -236,11 +236,11 @@
       "sites_with_readonly_writes": 23
     },
     "Commerce": {
-      "sites": 364,
-      "tools_seen": 2222,
-      "tools_executed": 887,
-      "tools_passed_pct": 63.6,
-      "sites_with_readonly_writes": 56
+      "sites": 367,
+      "tools_seen": 2251,
+      "tools_executed": 896,
+      "tools_passed_pct": 63.5,
+      "sites_with_readonly_writes": 57
     },
     "Developer Tools": {
       "sites": 194,
@@ -271,15 +271,15 @@
       "sites_with_readonly_writes": 12
     },
     "Productivity & Business": {
-      "sites": 323,
-      "tools_seen": 1643,
-      "tools_executed": 735,
-      "tools_passed_pct": 79.2,
+      "sites": 326,
+      "tools_seen": 1658,
+      "tools_executed": 741,
+      "tools_passed_pct": 79.1,
       "sites_with_readonly_writes": 30
     },
     "Travel & Events": {
-      "sites": 325,
-      "tools_seen": 1549,
+      "sites": 327,
+      "tools_seen": 1559,
       "tools_executed": 328,
       "tools_passed_pct": 58.5,
       "sites_with_readonly_writes": 33
@@ -301,10 +301,10 @@
       "sites_with_readonly_writes": 6
     },
     "B": {
-      "sites": 129,
-      "tools_seen": 627,
-      "tools_executed": 295,
-      "tools_passed_pct": 74.6,
+      "sites": 130,
+      "tools_seen": 634,
+      "tools_executed": 296,
+      "tools_passed_pct": 74.3,
       "sites_with_readonly_writes": 17
     },
     "C": {
@@ -315,11 +315,11 @@
       "sites_with_readonly_writes": 21
     },
     "D": {
-      "sites": 88,
-      "tools_seen": 604,
-      "tools_executed": 278,
-      "tools_passed_pct": 70.1,
-      "sites_with_readonly_writes": 8
+      "sites": 89,
+      "tools_seen": 626,
+      "tools_executed": 287,
+      "tools_passed_pct": 69.7,
+      "sites_with_readonly_writes": 9
     },
     "F": {
       "sites": 22,
