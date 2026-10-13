@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { homedir } from "node:os";
-import { pendingHosts, errorFor } from "../src/lib/pending.mjs";
+import { errorFor, pendingHosts, wasOffline } from "../src/lib/pending.mjs";
 
 test("pendingHosts skips done hosts and opted-out hosts, keeps directory order", () => {
   const directory = { sites: [{ host: "a.example" }, { host: "b.example" }, { host: "c.example" }, { host: "d.example" }] };
@@ -19,4 +19,13 @@ test("a run the pool killed is a timeout even when it wrote a file", () => {
 test("an error from a crashed run carries no home path or IP address", () => {
   const error = errorFor({ killed: false, message: "Command failed" }, `Error at ${homedir()}/x.mjs: connect 10.1.2.3:443`, false);
   assert.ok(!error.includes(homedir()) && !error.includes("10.1.2.3"), error);
+});
+
+test("a host whose pages failed because this machine was offline is not a result", () => {
+  const offlinePage = { url: "https://h.example/", status: "error", error: "page.goto: net::ERR_INTERNET_DISCONNECTED at https://h.example/" };
+  assert.equal(wasOffline({ status: "ok", pages: [offlinePage] }), true);
+  assert.equal(wasOffline({ status: "ok", pages: [{ ...offlinePage, error: "page.goto: net::ERR_NETWORK_CHANGED at https://h.example/" }] }), true);
+  assert.equal(wasOffline({ status: "ok", pages: [{ ...offlinePage, error: "page.goto: net::ERR_NAME_NOT_RESOLVED at https://h.example/" }] }), false);
+  assert.equal(wasOffline({ status: "ok", pages: [{ url: "https://h.example/", status: "ok" }], probe: { error: "page.goto: net::ERR_INTERNET_DISCONNECTED" } }), true);
+  assert.equal(wasOffline({ status: "skipped", host: "h.example" }), false);
 });

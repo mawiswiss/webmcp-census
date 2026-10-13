@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { chromium } from "@playwright/test";
 import { auditHost, launchArgs } from "./lib/audit-host.mjs";
 import { pagesFor } from "./lib/directory.mjs";
+import { wasOffline } from "./lib/pending.mjs";
 import { fetchRobots, isAllowed } from "./lib/robots.mjs";
 
 const host = process.argv[2];
@@ -20,7 +21,8 @@ if (!isAllowed(await fetchRobots(host), "/")) {
 
 const browser = await chromium.launch({ args: launchArgs(), executablePath: process.env.CENSUS_EXECUTABLE || undefined });
 try {
-  write({ status: "ok", ...(await auditHost({ host, urls: pagesFor(site), browser })) });
+  const result = { status: "ok", ...(await auditHost({ host, urls: pagesFor(site), browser })) };
+  write(wasOffline(result) ? { status: "error", host, error: "offline: this machine lost its connection during the audit" } : result);
 } finally {
   await browser.close();
 }
