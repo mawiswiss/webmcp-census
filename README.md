@@ -25,7 +25,7 @@ The corpus is the webmcp.com directory, read through its public API with `type=l
 
 ### Pages and browser
 
-Each host gets its homepage, plus up to two more pages the directory lists tools on. Three pages at most. The browser is Playwright's bundled Chromium with `--enable-features=WebMCP`, so no origin trial token is needed. It identifies itself as `webmcp-census/0.1 (+https://github.com/mawiswiss/webmcp-census)` and runs in UTC with the `en-US` locale. robots.txt is read first, for `webmcp-census` and for `*`. A host that disallows `/` is skipped.
+Each host gets its homepage, plus up to two more pages the directory lists tools on. Three pages at most. The browser is Playwright's bundled Chromium with `--enable-features=WebMCP`, so no origin trial token is needed. It identifies itself as `webmcp-census/0.1 (+https://github.com/mawiswiss/webmcp-census)` and runs in UTC with the `en-US` locale. robots.txt is read first, for `webmcp-census` and for `*`. Every page is checked against it, and a host whose pages are all disallowed is skipped.
 
 The census waits for the page's DOM, 30 s at most, then for the load event, 15 s at most. A page that never fires its load event is still audited. After that it waits 1.5 s, then until the tool list has held still for 1 s, ten seconds at most. Whatever is registered by then counts.
 
@@ -63,7 +63,7 @@ Each host's cached score comes from `GET https://ora.ai/api/score/{host}`, which
 
 ### Limits
 
-Tools registered after the settle window, or only after a click or a login, are not seen. A page whose main thread stops answering is an error, even when it registered tools. A tool that needs more than 20 s fails, even if an agent would wait longer. Bot protection shows up as `blocked`, not as a site without tools. A read-only tool with a side-effect word in its name is not called, even when it is harmless. The directory decides the corpus, so a site that is not listed is not in the census. A second audit of 30 random hosts matched the first on 28. One of the two others missed the page-load limit on the second visit, the other has a tool that passes only some of the time. The first hours of the run used the timezone of the machine running it, the rest ran in UTC. The query strings that carried it are removed from the data.
+Tools registered after the settle window, or only after a click or a login, are not seen. A page whose main thread stops answering is an error, even when it registered tools. A tool that needs more than 20 s fails, even if an agent would wait longer. Bot protection shows up as `blocked`, not as a site without tools. A read-only tool with a side-effect word in its name is not called, even when it is harmless. The directory decides the corpus, so a site that is not listed is not in the census. robots.txt was first checked for the homepage only, so four disallowed pages on four sites had been visited. They are removed from the data. Hosts whose every page failed got one more try, and 31 of 101 came back. A second audit of 30 random hosts matched the first on 28. One of the two others missed the page-load limit on the second visit, the other has a tool that passes only some of the time. The first hours of the run used the timezone of the machine running it, the rest ran in UTC. The query strings that carried it are removed from the data.
 
 ## Opting out
 
