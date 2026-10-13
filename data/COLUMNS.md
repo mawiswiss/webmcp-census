@@ -12,7 +12,7 @@ One row per site in the webmcp.com directory. A ratio with nothing to divide by 
 | `api_surface` | How the directory found the tools: `spec`, `polyfill` or `mixed`. |
 | `directory_act_tools` | Tools the directory classes as acting rather than answering. |
 | `directory_act_share` | `directory_act_tools` as a share of `directory_tools`, in %. |
-| `status` | `tools`, `no-tools`, `blocked`, `error` or `skipped`. See [How sites are classified](../README.md#how-sites-are-classified). |
+| `status` | `tools`, `no-tools`, `blocked`, `error` or `skipped`. See [How sites are classified](../METHOD.md#how-sites-are-classified). |
 | `legacy_surface` | 1 when a site without visible tools registered them on its own `navigator.modelContext` object. |
 | `legacy_tools` | Tools found on that object, when they could be counted. |
 

@@ -14,4 +14,4 @@ On 13 October 2026 the census loaded the 2,964 live sites of the webmcp.com dire
 
 ![Share of executed read-only tools that pass, by directory category](pass-rate.svg)
 
-The numbers come from [`data/summary.json`](../data/summary.json) and [`data/learnings.json`](../data/learnings.json), the method and its limits are in the [README](../README.md#method). The other charts: [top findings](top-findings.svg), [annotations](annotations.svg), [Ora grade against execution](ora-vs-execution.svg).
+The numbers come from [`data/summary.json`](../data/summary.json) and [`data/learnings.json`](../data/learnings.json), the method and its limits are in [METHOD.md](../METHOD.md). The other charts: [top findings](top-findings.svg), [annotations](annotations.svg), [Ora grade against execution](ora-vs-execution.svg).
