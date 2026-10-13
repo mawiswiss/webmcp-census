@@ -120,6 +120,42 @@ export function nextThings(rows) {
   };
 }
 
+const NOT_FOUND = /not\s*found|no (results|matches|data|items|product|record)|does not exist|doesn'?t exist|unknown (id|product|item)|404/i;
+const NEEDS_LOGIN = /auth|login|log in|sign in|permission|forbidden|401|403|token|unauthori[sz]ed|api key/i;
+
+export function failureCauses(rows, raws) {
+  const by_cause = { null_only: 0, error_text_as_answer: 0, error_on_sample_input: 0, not_found_for_made_up_input: 0, edge_value_only: 0, needs_login: 0, other: 0 };
+  for (const raw of raws) {
+    const { runs, findings } = siteCalls((raw.pages ?? []).filter((p) => p.status === "ok"));
+    const valid = runs.filter((r) => r.kind !== "invalid");
+    const failing = findings.filter((f) => EXEC_FAIL.has(f.ruleId));
+    for (const tool of new Set(runs.map((r) => r.tool))) {
+      const bad = valid.filter((r) => r.tool === tool && !r.ok);
+      const found = failing.filter((f) => f.tool === tool);
+      if (!bad.length && !found.length) continue;
+      const text = [...found.map((f) => f.message ?? ""), ...bad.map((r) => r.error ?? "")].join(" ");
+      const onSample = bad.some((r) => r.kind === "valid-minimal" || r.kind === "valid-full");
+      if (!bad.length && found.every((f) => f.ruleId === "result-contains-null")) by_cause.null_only++;
+      else if (onSample && NOT_FOUND.test(text)) by_cause.not_found_for_made_up_input++;
+      else if (onSample && NEEDS_LOGIN.test(text)) by_cause.needs_login++;
+      else if (onSample) by_cause.error_on_sample_input++;
+      else if (bad.length && found.every((f) => f.ruleId === "result-error-on-valid-input")) by_cause.edge_value_only++;
+      else if (!bad.length) by_cause.error_text_as_answer++;
+      else by_cause.other++;
+    }
+  }
+  const executed = rows.reduce((n, r) => n + (r.tools_executed || 0), 0);
+  const passed = rows.reduce((n, r) => n + (r.tools_passed || 0), 0);
+  const lenient = passed + by_cause.null_only + by_cause.not_found_for_made_up_input + by_cause.edge_value_only + by_cause.needs_login;
+  return {
+    note: "Sorted by the error text, so a heuristic. not_found and needs_login only count failures on the plain sample input. The lenient rate counts null_only, not_found, edge_value_only and needs_login as working.",
+    failing: Object.values(by_cause).reduce((a, b) => a + b, 0),
+    by_cause,
+    pass_pct_strict: pct(passed, executed),
+    pass_pct_lenient: pct(lenient, executed),
+  };
+}
+
 export function learnings(rows, raws, summary) {
   return {
     generatedAt: new Date().toISOString(),
@@ -128,5 +164,6 @@ export function learnings(rows, raws, summary) {
     gaps: gaps(rows, summary),
     low_hanging_fruits: lowHangingFruits(rows, raws),
     next_things: nextThings(rows),
+    failure_causes: failureCauses(rows, raws),
   };
 }

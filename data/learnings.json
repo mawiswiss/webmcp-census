@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-13T16:35:20.025Z",
+  "generatedAt": "2026-10-13T16:44:09.319Z",
   "baseline": {
     "sites": 1748,
     "tools_seen": 4,
@@ -748,5 +748,20 @@
       "sites": 919,
       "pct": 52.6
     }
+  },
+  "failure_causes": {
+    "note": "Sorted by the error text, so a heuristic. not_found and needs_login only count failures on the plain sample input. The lenient rate counts null_only, not_found, edge_value_only and needs_login as working.",
+    "failing": 1203,
+    "by_cause": {
+      "null_only": 337,
+      "error_text_as_answer": 332,
+      "error_on_sample_input": 248,
+      "not_found_for_made_up_input": 127,
+      "edge_value_only": 91,
+      "needs_login": 56,
+      "other": 12
+    },
+    "pass_pct_strict": 68.7,
+    "pass_pct_lenient": 84.6
   }
 }

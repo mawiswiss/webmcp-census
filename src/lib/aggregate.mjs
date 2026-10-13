@@ -1,5 +1,5 @@
 import { SMOKE_RULES, builtinRules, isReadOnlyTool } from "@swissspidy/webmcp-lint";
-import { median, pct } from "./stats.mjs";
+import { median, pct, spearman } from "./stats.mjs";
 
 export const RULES = [...builtinRules.map((r) => r.id), ...Object.keys(SMOKE_RULES)].filter((id) => id !== "no-tools");
 // A POST from a read-only tool fails nothing: RPC-style tool backends and MCP relays read over POST, see classifyWrite.
@@ -114,6 +114,18 @@ function groupStats(rows, key) {
   }]));
 }
 
+function visibility(rows, key) {
+  const groups = {};
+  for (const r of rows) (groups[r[key] || "?"] ??= []).push(r);
+  return Object.fromEntries(Object.entries(groups).sort().map(([k, list]) => {
+    const scanned = list.filter((r) => r.status !== "skipped").length;
+    const visible = list.filter((r) => r.status === "tools").length;
+    return [k, { listed: list.length, scanned, visible, visible_pct: pct(visible, scanned) }];
+  }));
+}
+
+const pairs = (rows, x, y) => [rows.map(x), rows.map(y)];
+
 export function summarize(rows) {
   const by = (status) => rows.filter((r) => r.status === status).length;
   const withTools = rows.filter((r) => r.status === "tools");
@@ -130,6 +142,7 @@ export function summarize(rows) {
       skipped: by("skipped"),
       with_calls: withTools.filter((r) => r.tools_executed > 0).length,
       nothing_to_call: withTools.filter((r) => r.tools_executed === 0).length,
+      with_a_working_tool: withTools.filter((r) => r.tools_passed > 0).length,
     },
     directory_claimed_by_status: Object.fromEntries([...new Set(rows.map((r) => r.status))].map((st) => [st, sum(rows.filter((r) => r.status === st), "directory_tools")])),
     by_api_surface: rows.reduce((acc, r) => {
@@ -162,6 +175,12 @@ export function summarize(rows) {
     rules: Object.fromEntries(RULES.map((id) => [id, { findings: sum(rows, col(id)), sites: rows.filter((r) => r[col(id)] > 0).length }])),
     by_category: groupStats(withTools, "category"),
     by_ora_grade: groupStats(withTools.filter((r) => r.ora_grade !== ""), "ora_grade"),
+    visibility_by_category: visibility(rows, "category"),
+    ora: {
+      sites_graded: rows.filter((r) => r.ora_grade !== "").length,
+      visible_pct_by_grade: Object.fromEntries(Object.entries(visibility(rows.filter((r) => r.ora_grade !== ""), "ora_grade")).map(([g, v]) => [g, v.visible_pct])),
+      score_vs_site_pass_rate: spearman(...pairs(withTools.filter((r) => r.tools_executed > 0 && r.ora_score !== ""), (r) => r.ora_score, (r) => r.tools_passed / r.tools_executed)),
+    },
   };
 }
 

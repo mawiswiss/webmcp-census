@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { baseline, topVsRest, gaps, lowHangingFruits, nextThings, learnings } from "../src/lib/learnings.mjs";
+import { baseline, topVsRest, gaps, lowHangingFruits, nextThings, failureCauses, learnings } from "../src/lib/learnings.mjs";
 
 const base = {
   status: "tools", category: "Commerce", tools_seen: 2, tools_imperative: 2, tools_annotated: 1, tools_readonly: 1, tools_consequential: 0,
@@ -77,7 +77,7 @@ test("nextThings counts adoption per spec feature over sites with tools", () => 
 
 test("learnings has the five keys and a timestamp", () => {
   const l = learnings(rows, [], { rules: {}, by_category: {} });
-  assert.deepEqual(Object.keys(l).sort(), ["baseline", "gaps", "generatedAt", "low_hanging_fruits", "next_things", "top_vs_rest"]);
+  assert.deepEqual(Object.keys(l).sort(), ["baseline", "failure_causes", "gaps", "generatedAt", "low_hanging_fruits", "next_things", "top_vs_rest"]);
 });
 
 test("sites on the legacy surface become a fruit that counts the hidden tools", () => {
@@ -93,4 +93,32 @@ test("a tool failing on null on two pages of a site flips once", () => {
   const page = { status: "ok", smoke: { runs: [{ tool: "a", kind: "valid-minimal", ok: true }], findings: [{ ruleId: "result-contains-null", tool: "a" }] } };
   const fruits = lowHangingFruits([], [{ pages: [page, page] }]);
   assert.equal(fruits.find((f) => f.rule === "result-contains-null").tools_flipped, 1);
+});
+
+test("failureCauses sorts each failing tool by what made it fail", () => {
+  const run = (tool, kind, ok, error) => ({ tool, kind, label: kind, ok, ...(error && { error }) });
+  const finding = (tool, ruleId, message = "") => ({ tool, ruleId, message });
+  const raws = [{ pages: [{ status: "ok", smoke: {
+    runs: [
+      run("fine", "valid-minimal", true),
+      run("nully", "valid-minimal", true),
+      run("texty", "valid-minimal", true),
+      run("lookup", "valid-minimal", false, "Product not found"),
+      run("member", "valid-minimal", false, "Please log in first"),
+      run("broken", "valid-minimal", false, "TypeError: x is undefined"),
+      run("edgy", "valid-minimal", true), run("edgy", "boundary", false, "Query must not be empty"),
+    ],
+    findings: [
+      finding("nully", "result-contains-null"),
+      finding("texty", "result-error-on-valid-input", "returned an error as a normal result"),
+      finding("lookup", "result-error-on-valid-input"), finding("member", "result-error-on-valid-input"),
+      finding("broken", "result-error-on-valid-input"), finding("edgy", "result-error-on-valid-input"),
+    ],
+  } }] }];
+  const rows = [{ status: "tools", tools_executed: 7, tools_passed: 1 }];
+  const c = failureCauses(rows, raws);
+  assert.deepEqual(c.by_cause, { null_only: 1, error_text_as_answer: 1, error_on_sample_input: 1, not_found_for_made_up_input: 1, edge_value_only: 1, needs_login: 1, other: 0 });
+  assert.equal(c.failing, 6);
+  assert.equal(c.pass_pct_strict, 14.3);
+  assert.equal(c.pass_pct_lenient, 71.4, "fine, nully, lookup, member and edgy");
 });

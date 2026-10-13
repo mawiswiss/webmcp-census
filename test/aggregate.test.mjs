@@ -91,7 +91,7 @@ test("summarize produces the headline numbers", () => {
     summarizeSite(skipped, {}, undefined),
   ];
   const s = summarize(rows);
-  assert.deepEqual(s.sites, { total: 5, scanned: 4, tools: 1, no_tools: 1, blocked: 1, error: 1, skipped: 1, with_calls: 1, nothing_to_call: 0 });
+  assert.deepEqual(s.sites, { total: 5, scanned: 4, tools: 1, no_tools: 1, blocked: 1, error: 1, skipped: 1, with_calls: 1, nothing_to_call: 0, with_a_working_tool: 1 });
   assert.equal(s.tools.seen, 3);
   assert.equal(s.tools.readonly_pct, 66.7);
   assert.equal(s.tools.passed_pct, 100);
@@ -100,6 +100,10 @@ test("summarize produces the headline numbers", () => {
   assert.equal(s.rules["result-writes"].sites, 1);
   assert.equal(s.by_category.Commerce.sites, 1);
   assert.equal(s.by_ora_grade.C.tools_passed_pct, 100);
+  assert.equal(s.sites.with_a_working_tool, 1);
+  assert.deepEqual(s.visibility_by_category.Commerce, { listed: 2, scanned: 2, visible: 1, visible_pct: 50 });
+  assert.equal(s.ora.sites_graded, 1);
+  assert.deepEqual(s.ora.visible_pct_by_grade, { C: 100 });
 });
 
 test("toCsv quotes commas and quotes", () => {
