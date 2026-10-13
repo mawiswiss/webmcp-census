@@ -4,6 +4,7 @@
 <h1>Broken WebMCP fixture</h1>
 <script>
   const mc = document.modelContext ?? navigator.modelContext;
+  fetch(`/env?zone=${encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)}&lang=${navigator.language}`);
   const ro = { readOnlyHint: true };
   const register = (tool) => mc.registerTool(tool).catch((err) => console.error("register failed", tool.name, err));
 

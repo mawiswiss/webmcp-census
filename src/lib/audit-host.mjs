@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
-import { auditPage } from "./audit-page.mjs";
+import { CONTEXT_OPTIONS, auditPage } from "./audit-page.mjs";
+import { scrubText } from "./scrub.mjs";
 import { orFail, within } from "./bounded.mjs";
 import { debug } from "./debug.mjs";
 import { UA } from "./ua.mjs";
@@ -44,11 +45,11 @@ export async function auditHost({ host, urls, browser, callLimitMs = 20_000, bud
 }
 
 async function probePage(browser, url, timeoutMs) {
-  const context = await browser.newContext();
+  const context = await browser.newContext(CONTEXT_OPTIONS);
   try {
     return await orFail(probeIn(context, url), timeoutMs, "probe");
   } catch (err) {
-    return { status: null, title: null, blocked: false, error: String(err?.message ?? err) };
+    return { status: null, title: null, blocked: false, error: scrubText(String(err?.message ?? err)) };
   } finally {
     await within(context.close(), 10_000);
   }

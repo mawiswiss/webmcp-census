@@ -3,6 +3,9 @@ import { lint, toContract } from "@swissspidy/webmcp-lint";
 import { boundedCall, orFail, withBudget, within } from "./bounded.mjs";
 import { debug } from "./debug.mjs";
 
+// A fixed timezone and locale keep the machine's own settings away from the sites and out of the data.
+export const CONTEXT_OPTIONS = { timezoneId: "UTC", locale: "en-US" };
+
 export function addToolRuns(smoke, name, part) {
   if (part.runs.some((r) => /^budget:/.test(r.error ?? ""))) {
     smoke.unfinished.push(name);
@@ -20,7 +23,7 @@ export function countBySeverity(findings) {
 
 export async function auditPage(browser, url, { settleMs = 1500, callLimitMs = 20_000, loadTimeoutMs = 15_000, snapshotTimeoutMs = 20_000, deadline = Infinity, smokeOptions = {} } = {}) {
   debug("page", url);
-  const context = await browser.newContext();
+  const context = await browser.newContext(CONTEXT_OPTIONS);
   const page = await context.newPage();
   debug("context ready");
   const webmcp = new WebMCP(page, undefined, { record: true, lint: {}, cdp: "auto" });

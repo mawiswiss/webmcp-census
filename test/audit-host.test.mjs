@@ -30,6 +30,7 @@ test("the harness sees every broken thing in the fixture and nothing it must not
     assert.ok(page.smoke.runs.every((r) => !("result" in r) && !("args" in r)), "results and args stripped");
     assert.ok(!server.requests.some((r) => r.url === "/send"), "no request from the excluded tool");
     assert.ok(server.requests.every((r) => r.ua === UA), "census user agent on every request");
+    assert.ok(server.requests.some((r) => r.url === "/env?zone=UTC&lang=en-US"), "the page sees UTC and en-US, not the machine's own settings");
     assert.equal(raw.probe, null, "no probe when tools were seen");
   } finally {
     await browser.close();
