@@ -8,6 +8,14 @@
   const register = (tool) => mc.registerTool(tool).catch((err) => console.error("register failed", tool.name, err));
 
   register({
+    name: "jump_tool",
+    description: "Opens the page with the latest news. Declared read-only, but it navigates away from the current page.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: ro,
+    execute: async () => { location.href = "/elsewhere"; return { opened: true }; },
+  });
+
+  register({
     name: "get_time",
     description: "Returns the current server time for the visitor as an ISO 8601 string.",
     inputSchema: { type: "object", properties: {} },
@@ -60,6 +68,14 @@
     inputSchema: { type: "object", properties: {} },
     annotations: ro,
     execute: async () => { await fetch("/graphql", { method: "POST", body: JSON.stringify({ query: "mutation { cartCreate { cart { id } } }" }) }); return { id: "c1" }; },
+  });
+
+  register({
+    name: "hang_tool",
+    description: "Looks up a delivery estimate but never answers, the way a stalled backend call would.",
+    inputSchema: { type: "object", properties: { postcode: { type: "string", description: "The postcode to estimate for." } } },
+    annotations: ro,
+    execute: () => new Promise(() => {}),
   });
 
   setTimeout(() => register({

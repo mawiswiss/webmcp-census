@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>busy fixture</title>
+<script>
+  document.modelContext.registerTool({
+    name: "get_status",
+    description: "Returns the current status of the service for the visitor.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: { readOnlyHint: true },
+    execute: async () => ({ status: "up" }),
+  });
+  setTimeout(() => { for (;;) {} }, 300);
+</script>

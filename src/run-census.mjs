@@ -1,9 +1,9 @@
 import { execFile } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { pendingHosts } from "./lib/pending.mjs";
+import { errorFor, pendingHosts } from "./lib/pending.mjs";
 
 const CONCURRENCY = Number(process.env.CENSUS_CONCURRENCY ?? 4);
-const TIMEOUT_MS = Number(process.env.CENSUS_TIMEOUT_MS ?? 150_000);
+const TIMEOUT_MS = Number(process.env.CENSUS_TIMEOUT_MS ?? 420_000);
 const retryErrors = process.argv.includes("--retry-errors");
 
 const directory = JSON.parse(readFileSync("data/directory.json", "utf8"));
@@ -28,9 +28,8 @@ function next() {
     const t0 = Date.now();
     execFile(process.execPath, ["src/audit-one.mjs", host], { timeout: TIMEOUT_MS, maxBuffer: 20_000_000 }, (err, stdout, stderr) => {
       const file = `data/raw/${host}.json`;
-      if (err && !existsSync(file)) {
-        writeFileSync(file, JSON.stringify({ status: "error", host, error: err.killed ? "timeout" : String(stderr || err.message).slice(0, 500) }, null, 2) + "\n");
-      }
+      const error = errorFor(err, stderr, existsSync(file));
+      if (error) writeFileSync(file, JSON.stringify({ status: "error", host, error }, null, 2) + "\n");
       const status = JSON.parse(readFileSync(file, "utf8")).status;
       finished++;
       active--;

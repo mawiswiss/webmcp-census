@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>slow load fixture</title>
+<img src="/never" alt="">
+<script>
+  document.modelContext.registerTool({
+    name: "get_opening_hours",
+    description: "Returns the opening hours of the shop for the coming week.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: { readOnlyHint: true },
+    execute: async () => ({ hours: "9-17" }),
+  });
+</script>

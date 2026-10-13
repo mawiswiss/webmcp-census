@@ -1,57 +1,67 @@
 import { readFileSync } from "node:fs";
-import { audit } from "@swissspidy/webmcp-audit";
+import { auditPage } from "./audit-page.mjs";
+import { orFail, within } from "./bounded.mjs";
+import { debug } from "./debug.mjs";
 import { UA } from "./ua.mjs";
 import { selectTool } from "./select.mjs";
 import { isGraphqlRead } from "./ignore.mjs";
 import { stripPage } from "./strip.mjs";
 
-const AUDIT_VERSION = JSON.parse(readFileSync(new URL("../../node_modules/@swissspidy/webmcp-audit/package.json", import.meta.url), "utf8")).version;
+const versionOf = (pkg) => JSON.parse(readFileSync(new URL(`../../node_modules/${pkg}/package.json`, import.meta.url), "utf8")).version;
+const AUDIT_VERSION = versionOf("@swissspidy/webmcp-audit");
+const ENGINE_VERSION = versionOf("@swissspidy/playwright-webmcp");
 const BLOCK_TITLE = /just a moment|attention required|access denied|captcha|verify you are human|forbidden/i;
 
 export function launchArgs() {
   return ["--enable-features=WebMCP", `--user-agent=${UA}`];
 }
 
-export async function auditHost({ host, urls, browser }) {
+export async function auditHost({ host, urls, browser, callLimitMs = 20_000, budgetMs = 180_000, loadTimeoutMs = 15_000, snapshotTimeoutMs = 20_000, probeTimeoutMs = 60_000 }) {
+  const deadline = Date.now() + budgetMs;
   const pages = [];
   for (const url of urls) {
-    const report = await audit({
-      url,
-      crawl: false,
-      maxPages: 1,
-      smoke: true,
+    const result = await auditPage(browser, url, {
       settleMs: 1500,
-      browser,
+      callLimitMs,
+      loadTimeoutMs,
+      snapshotTimeoutMs,
+      deadline,
       smokeOptions: { tools: selectTool, maxDurationMs: 8000, ignoreRequests: isGraphqlRead },
     });
-    pages.push(...report.pages.map(stripPage));
+    pages.push(stripPage(result));
   }
   const sawTools = pages.some((p) => (p.snapshot?.tools.length ?? 0) > 0);
-  const probe = sawTools ? null : await probePage(browser, urls[0]);
+  debug("probe", !sawTools);
+  const probe = sawTools ? null : await probePage(browser, urls[0], probeTimeoutMs);
+  debug("probe done");
   return {
     host,
     auditedAt: new Date().toISOString(),
-    versions: { chromium: browser.version(), audit: AUDIT_VERSION },
+    versions: { chromium: browser.version(), audit: AUDIT_VERSION, engine: ENGINE_VERSION, callLimitMs, budgetMs, loadTimeoutMs },
     pages,
     probe,
   };
 }
 
-async function probePage(browser, url) {
+async function probePage(browser, url, timeoutMs) {
   const context = await browser.newContext();
-  const page = await context.newPage();
   try {
-    const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30_000 });
-    await page.waitForLoadState("load", { timeout: 10_000 }).catch(() => {});
-    await page.waitForTimeout(1500);
-    const title = await page.title();
-    const surface = await page.evaluate(legacySurface);
-    return { status: response?.status() ?? null, title, blocked: (response?.status() ?? 0) >= 400 || BLOCK_TITLE.test(title), ...surface };
+    return await orFail(probeIn(context, url), timeoutMs, "probe");
   } catch (err) {
     return { status: null, title: null, blocked: false, error: String(err?.message ?? err) };
   } finally {
-    await context.close();
+    await within(context.close(), 10_000);
   }
+}
+
+async function probeIn(context, url) {
+  const page = await context.newPage();
+  const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30_000 });
+  await page.waitForLoadState("load", { timeout: 10_000 }).catch(() => {});
+  await page.waitForTimeout(1500);
+  const title = await page.title();
+  const surface = await page.evaluate(legacySurface);
+  return { status: response?.status() ?? null, title, blocked: (response?.status() ?? 0) >= 400 || BLOCK_TITLE.test(title), ...surface };
 }
 
 // Chromium 156 has no native navigator.modelContext, so a plain object there is a page's own stand-in that no agent reads.
