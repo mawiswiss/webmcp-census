@@ -122,3 +122,11 @@ test("a stand-in navigator.modelContext marks a site as legacy", () => {
   assert.equal(plain.legacy_tools, 0);
   assert.equal(summarize([row, plain]).sites_legacy_surface, 1);
 });
+
+test("tools left unfinished by the time budget are counted, not executed", () => {
+  const cut = { ...withTools, host: "h.example", pages: [{ ...withTools.pages[0], smoke: { ...withTools.pages[0].smoke, unfinished: ["submit_order", "other"] } }] };
+  const row = summarizeSite(cut, siteA, undefined);
+  assert.equal(row.tools_unfinished, 2);
+  assert.equal(summarizeSite(withTools, siteA, undefined).tools_unfinished, 0);
+  assert.equal(summarize([row]).sites_with_unfinished_tools, 1);
+});
