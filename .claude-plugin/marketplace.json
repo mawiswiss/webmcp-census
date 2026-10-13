@@ -1,0 +1,15 @@
+{
+  "name": "webmcp-census",
+  "description": "The WebMCP Census: quarterly findings on how the WebMCP tools of real sites behave when an agent calls them.",
+  "owner": {
+    "name": "Marc Wieland",
+    "email": "mail@marcwieland.name"
+  },
+  "plugins": [
+    {
+      "name": "webmcp-readiness",
+      "source": "./plugin",
+      "description": "The WebMCP Census findings as a skill for coding agents."
+    }
+  ]
+}

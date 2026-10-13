@@ -1,0 +1,14 @@
+{
+  "name": "webmcp-readiness",
+  "version": "2026.3.0",
+  "description": "What the WebMCP Census found when it called the read-only WebMCP tools of 2,964 sites: the baseline, what good sites do differently, the common failures with their fix, and a checklist before a tool goes live.",
+  "author": {
+    "name": "Marc Wieland",
+    "email": "mail@marcwieland.name",
+    "url": "https://marcwieland.name"
+  },
+  "homepage": "https://marcwieland.name/webmcp-census-q3-2026/",
+  "repository": "https://github.com/mawiswiss/webmcp-census",
+  "license": "MIT",
+  "keywords": ["webmcp", "ai-agents", "web-standards", "skill"]
+}
