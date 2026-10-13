@@ -9,10 +9,9 @@ The Q3 2026 census covers the 2,964 live sites in the directory, audited on 13 O
 - `data/census.csv`: one row per site. [`data/COLUMNS.md`](data/COLUMNS.md) explains every column.
 - `data/summary.json`: the totals, per category and per Ora grade.
 - `data/learnings.json`: the typical site, the sites that pass every call against the rest, the gaps, the cheap fixes and how many sites use each part of the standard.
-- `data/directory.json`: the directory snapshot the census ran on.
 - `data/versions.json`: browser, engine, time limits and the run window.
 - `plugin/skills/webmcp-readiness/SKILL.md`: the findings as a skill for coding agents.
-- The raw records, one file per site, come with each [release](https://github.com/mawiswiss/webmcp-census/releases).
+- The raw records, one file per site, and the directory snapshot the census ran on come with each [release](https://github.com/mawiswiss/webmcp-census/releases).
 
 How the census measures, and where it falls short: [METHOD.md](METHOD.md).
 

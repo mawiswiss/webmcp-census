@@ -1,6 +1,6 @@
 # WebMCP Census: method
 
-The corpus is the webmcp.com directory, read through its public API with `type=live`. The snapshot in `data/directory.json` was fetched on 12 October 2026. Every host in it gets one run. Exact versions and the run window are in `data/versions.json`.
+The corpus is the webmcp.com directory, read through its public API with `type=live`. The snapshot was fetched on 12 October 2026 and ships with the release as `data/directory.json`, next to the raw records. Every host in it gets one run. Exact versions and the run window are in `data/versions.json`.
 
 ## Pages and browser
 

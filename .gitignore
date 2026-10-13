@@ -1,5 +1,6 @@
 node_modules/
 data/raw/
+data/directory.json
 data/ora/
 test-results/
 .webmcp-audit/
