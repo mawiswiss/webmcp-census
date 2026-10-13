@@ -1,3 +1,4 @@
+import { EXEC_FAIL } from "./aggregate.mjs";
 import { median, mean, pct } from "./stats.mjs";
 
 const passRate = (r) => (r.tools_executed ? r.tools_passed / r.tools_executed : null);
@@ -46,7 +47,6 @@ const CHEAP = {
   "result-accepts-invalid-input": "Validate input against your own schema and throw on a mismatch.",
   "schema-unsupported-keywords": "Flatten $ref, oneOf, anyOf and allOf into plain object schemas.",
 };
-const EXEC_FAIL = new Set(["result-error-on-valid-input", "result-contains-null", "result-not-serializable", "result-writes"]);
 const col = (id) => `r_${id.replace(/-/g, "_")}`;
 
 function toolsFlippedBy(raws, ruleId) {

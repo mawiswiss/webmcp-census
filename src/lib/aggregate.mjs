@@ -8,7 +8,22 @@ export const RULES = [
   "schema-depth", "schema-unsupported-keywords", "description-injection", "sensitive-params", "duplicate-tool-name", "tool-shadowing",
   "third-party-registration", "similar-descriptions", "too-many-tools", "naming-consistency", "capability-trifecta",
 ];
-const EXEC_FAIL = new Set(["result-error-on-valid-input", "result-contains-null", "result-not-serializable", "result-writes"]);
+// A POST from a read-only tool fails nothing: RPC-style tool backends and MCP relays read over POST, see classifyWrite.
+export const EXEC_FAIL = new Set(["result-error-on-valid-input", "result-contains-null", "result-not-serializable"]);
+const MCP_RELAY = /\/(web)?mcp(\.php)?(\/rpc)?\/?$/i;
+const ANALYTICS = /(\/g\/c$|\/collect$|\/cdn-cgi\/rum|monorail|beacon|telemetry|\/events?$|analytics|\/metrics|\/logs?$|\/ping$|csp-violations|\/usage\/?$|_log\.php$|\/monitoring$|\/_mintlify\/api\/v1\/e$)/i;
+
+export function classifyWrite(url) {
+  let path;
+  try {
+    path = new URL(url).pathname;
+  } catch {
+    path = String(url).split(/[?#]/)[0];
+  }
+  if (MCP_RELAY.test(path)) return "mcp";
+  if (ANALYTICS.test(path)) return "analytics";
+  return "other";
+}
 const col = (id) => `r_${id.replace(/-/g, "_")}`;
 const hint = (t, spec, cdp) => t.annotations?.[spec] === true || t.annotations?.[cdp] === true;
 
@@ -32,6 +47,8 @@ export function summarizeSite(raw, site = {}, ora) {
   const validRuns = runs.filter((r) => r.kind !== "invalid");
   const failedTools = new Set(smokeFindings.filter((f) => EXEC_FAIL.has(f.ruleId)).map((f) => f.tool));
   const passed = executed.filter((t) => !failedTools.has(t) && validRuns.filter((r) => r.tool === t).every((r) => r.ok));
+  const posts = runs.flatMap((r) => (r.writes ?? []).filter((w) => !w.crossOrigin).map((w) => ({ tool: r.tool, url: w.url })));
+  const targets = (kind) => new Set(posts.filter((p) => classifyWrite(p.url) === kind).map((p) => stripTarget(p.url))).size;
   const params = tools.flatMap((t) => Object.values(t.inputSchema?.properties ?? {}));
   const described = params.filter((p) => typeof p?.description === "string" && p.description.length > 0).length;
   const dirTools = site.tools ?? [];
@@ -63,6 +80,10 @@ export function summarizeSite(raw, site = {}, ora) {
     tools_passed: passed.length,
     runs_valid: validRuns.length,
     runs_valid_ok: validRuns.filter((r) => r.ok).length,
+    tools_posting: new Set(posts.map((p) => p.tool)).size,
+    post_targets_mcp: targets("mcp"),
+    post_targets_analytics: targets("analytics"),
+    post_targets_other: targets("other"),
     lint_errors: lintFindings.filter((f) => f.severity === "error").length,
     lint_warnings: lintFindings.filter((f) => f.severity === "warning").length,
     ora_score: typeof ora?.score === "number" ? ora.score : "",
@@ -107,6 +128,12 @@ export function summarize(rows) {
     runs: { valid: sum(withTools, "runs_valid"), valid_ok_pct: pct(sum(withTools, "runs_valid_ok"), sum(withTools, "runs_valid")) },
     sites_with_lint_errors: withTools.filter((r) => r.lint_errors > 0).length,
     sites_with_readonly_writes: rows.filter((r) => r.r_result_writes > 0).length,
+    sites_posting: {
+      any: rows.filter((r) => r.tools_posting > 0).length,
+      mcp: rows.filter((r) => r.post_targets_mcp > 0).length,
+      analytics: rows.filter((r) => r.post_targets_analytics > 0).length,
+      other: rows.filter((r) => r.post_targets_other > 0).length,
+    },
     sites_legacy_surface: rows.filter((r) => r.legacy_surface === 1).length,
     sites_with_unfinished_tools: rows.filter((r) => r.tools_unfinished > 0).length,
     rules: Object.fromEntries(RULES.map((id) => [id, { findings: sum(rows, col(id)), sites: rows.filter((r) => r[col(id)] > 0).length }])),
@@ -120,4 +147,13 @@ export function toCsv(rows) {
   const cols = Object.keys(rows[0]);
   const cell = (v) => { const s = String(v ?? ""); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
   return [cols.join(","), ...rows.map((r) => cols.map((c) => cell(r[c])).join(","))].join("\n") + "\n";
+}
+
+function stripTarget(url) {
+  try {
+    const u = new URL(url);
+    return `${u.origin}${u.pathname}`;
+  } catch {
+    return String(url).split(/[?#]/)[0];
+  }
 }

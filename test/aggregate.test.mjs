@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { classify, summarizeSite, summarize, toCsv, RULES } from "../src/lib/aggregate.mjs";
+import { classify, classifyWrite, summarizeSite, summarize, toCsv, RULES } from "../src/lib/aggregate.mjs";
 
 const ro = { readOnlyHint: true };
 const tool = (name, annotations, inputSchema = { type: "object", properties: {} }) => ({ name, description: "x".repeat(30), inputSchema, annotations, source: "imperative", origin: "https://a.example", frame: 0 });
@@ -56,7 +56,7 @@ test("summarizeSite counts tools, annotations, runs, passes and findings", () =>
   assert.equal(row.params_described, 1);
   assert.equal(row.params_described_pct, 50);
   assert.equal(row.tools_executed, 2);
-  assert.equal(row.tools_passed, 1, "liar fails on result-writes");
+  assert.equal(row.tools_passed, 2, "a POST alone does not fail a tool");
   assert.equal(row.runs_valid, 3);
   assert.equal(row.runs_valid_ok, 3);
   assert.equal(row.lint_errors, 0);
@@ -93,12 +93,12 @@ test("summarize produces the headline numbers", () => {
   assert.deepEqual(s.sites, { total: 5, scanned: 4, tools: 1, no_tools: 1, blocked: 1, error: 1, skipped: 1 });
   assert.equal(s.tools.seen, 3);
   assert.equal(s.tools.readonly_pct, 66.7);
-  assert.equal(s.tools.passed_pct, 50);
+  assert.equal(s.tools.passed_pct, 100);
   assert.equal(s.runs.valid_ok_pct, 100);
   assert.equal(s.sites_with_readonly_writes, 1);
   assert.equal(s.rules["result-writes"].sites, 1);
   assert.equal(s.by_category.Commerce.sites, 1);
-  assert.equal(s.by_ora_grade.C.tools_passed_pct, 50);
+  assert.equal(s.by_ora_grade.C.tools_passed_pct, 100);
 });
 
 test("toCsv quotes commas and quotes", () => {
@@ -129,4 +129,32 @@ test("tools left unfinished by the time budget are counted, not executed", () =>
   assert.equal(row.tools_unfinished, 2);
   assert.equal(summarizeSite(withTools, siteA, undefined).tools_unfinished, 0);
   assert.equal(summarize([row]).sites_with_unfinished_tools, 1);
+});
+
+test("same-origin POSTs are sorted into MCP relays, analytics and other targets", () => {
+  assert.equal(classifyWrite("https://a.example/api/mcp"), "mcp");
+  assert.equal(classifyWrite("https://a.example/mcp/"), "mcp");
+  assert.equal(classifyWrite("https://a.example/wp-json/x/v1/mcp"), "mcp");
+  assert.equal(classifyWrite("https://a.example/webmcp/rpc"), "mcp");
+  assert.equal(classifyWrite("https://a.example/api/webmcp.php"), "mcp");
+  assert.equal(classifyWrite("https://a.example/cdn-cgi/rum"), "analytics");
+  assert.equal(classifyWrite("https://a.example/ruyh/ga/g/c"), "analytics");
+  assert.equal(classifyWrite("https://a.example/ruyh/gs/ccm/collect"), "analytics");
+  assert.equal(classifyWrite("https://a.example/.well-known/shopify/monorail/unstable/produce_batch"), "analytics");
+  assert.equal(classifyWrite("https://a.example/api/telemetry/web-vitals"), "analytics");
+  assert.equal(classifyWrite("https://a.example/monitoring"), "analytics");
+  assert.equal(classifyWrite("https://a.example/api/tools/search_apartments"), "other");
+  assert.equal(classifyWrite("https://a.example/api/booking/availability"), "other");
+  assert.equal(classifyWrite("https://a.example/track"), "other");
+});
+
+test("a site's same-origin POSTs are counted by kind, cross-origin ones are not", () => {
+  const row = summarizeSite(withTools, siteA, undefined);
+  assert.equal(row.tools_posting, 1);
+  assert.equal(row.post_targets_other, 1);
+  assert.equal(row.post_targets_mcp, 0);
+  assert.equal(row.post_targets_analytics, 0);
+  const crossOnly = { ...withTools, pages: [{ ...withTools.pages[0], smoke: { ...withTools.pages[0].smoke, runs: [{ tool: "liar", kind: "valid-minimal", ok: true, durationMs: 5, writes: [{ method: "POST", url: "https://ga.example/g/collect", crossOrigin: true }] }] } }] };
+  assert.equal(summarizeSite(crossOnly, siteA, undefined).tools_posting, 0);
+  assert.deepEqual(summarize([row]).sites_posting, { any: 1, mcp: 0, analytics: 0, other: 1 });
 });

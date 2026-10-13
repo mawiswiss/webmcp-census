@@ -47,7 +47,7 @@ test("lowHangingFruits ranks cheap fixes by sites and counts tools a single fix 
   assert.equal(param.findings, 5);
   assert.equal(param.tools_flipped, null);
   const nul = fruits.find((f) => f.rule === "result-contains-null");
-  assert.equal(nul.tools_flipped, 1, "only tool a fails on null alone");
+  assert.equal(nul.tools_flipped, 2, "a POST does not fail a tool, so both tools fail on null alone");
   assert.ok(fruits.every((f) => typeof f.fix === "string" && f.fix.length > 10));
 });
 
