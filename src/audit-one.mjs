@@ -3,7 +3,7 @@ import { chromium } from "@playwright/test";
 import { auditHost, launchArgs } from "./lib/audit-host.mjs";
 import { pagesFor } from "./lib/directory.mjs";
 import { wasOffline } from "./lib/pending.mjs";
-import { fetchRobots, isAllowed } from "./lib/robots.mjs";
+import { allowedUrls, fetchRobots } from "./lib/robots.mjs";
 
 const host = process.argv[2];
 const directory = JSON.parse(readFileSync("data/directory.json", "utf8"));
@@ -14,14 +14,15 @@ mkdirSync("data/raw", { recursive: true });
 const out = `data/raw/${host}.json`;
 const write = (obj) => writeFileSync(out, JSON.stringify(obj, null, 2) + "\n");
 
-if (!isAllowed(await fetchRobots(host), "/")) {
+const urls = allowedUrls(pagesFor(site), await fetchRobots(host));
+if (!urls.length) {
   write({ status: "skipped", host, reason: "robots" });
   process.exit(0);
 }
 
 const browser = await chromium.launch({ args: launchArgs(), executablePath: process.env.CENSUS_EXECUTABLE || undefined });
 try {
-  const result = { status: "ok", ...(await auditHost({ host, urls: pagesFor(site), browser })) };
+  const result = { status: "ok", ...(await auditHost({ host, urls, browser })) };
   write(wasOffline(result) ? { status: "error", host, error: "offline: this machine lost its connection during the audit" } : result);
 } finally {
   await browser.close();

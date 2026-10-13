@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isAllowed, fetchRobots } from "../src/lib/robots.mjs";
+import { allowedUrls, fetchRobots, isAllowed } from "../src/lib/robots.mjs";
 
 test("no robots.txt or no matching group allows", () => {
   assert.equal(isAllowed("", "/"), true);
@@ -27,4 +27,12 @@ test("fetchRobots returns the text, or an empty string on any failure", async ()
   assert.equal(await fetchRobots("h.example", async () => ({ ok: true, text: async () => "User-agent: *\nDisallow: /" })), "User-agent: *\nDisallow: /");
   assert.equal(await fetchRobots("h.example", async () => ({ ok: false })), "");
   assert.equal(await fetchRobots("h.example", async () => { throw new Error("ECONNRESET"); }), "");
+});
+
+test("allowedUrls keeps only the pages robots.txt allows, query included", () => {
+  const urls = ["https://h.example/", "https://h.example/app", "https://h.example/docs?tab=api"];
+  assert.deepEqual(allowedUrls(urls, "User-agent: *\nDisallow: /app"), ["https://h.example/", "https://h.example/docs?tab=api"]);
+  assert.deepEqual(allowedUrls(urls, "User-agent: *\nDisallow: /docs?tab="), ["https://h.example/", "https://h.example/app"]);
+  assert.deepEqual(allowedUrls(urls, "User-agent: webmcp-census\nDisallow: /"), []);
+  assert.deepEqual(allowedUrls(urls, ""), urls);
 });

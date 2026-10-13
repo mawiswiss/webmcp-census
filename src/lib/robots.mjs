@@ -40,3 +40,10 @@ export function isAllowed(robotsTxt, path = "/", agent = "webmcp-census") {
   const longest = (rules) => rules.filter((r) => path.startsWith(r)).sort((a, b) => b.length - a.length)[0] ?? "";
   return longest(group.allow).length >= longest(group.disallow).length;
 }
+
+export function allowedUrls(urls, robotsTxt) {
+  return urls.filter((u) => {
+    const { pathname, search } = new URL(u);
+    return isAllowed(robotsTxt, pathname + search);
+  });
+}
