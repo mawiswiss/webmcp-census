@@ -52,6 +52,7 @@ export function summarizeSite(raw, site = {}, ora) {
     host: raw.host,
     category: site.category ?? "",
     directory_tools: site.toolCount ?? dirTools.length,
+    api_surface: site.apiSurface ?? "",
     directory_act_tools: actTools,
     directory_act_share: blank(pct(actTools, dirTools.length)),
     status: classify(raw),
@@ -107,7 +108,23 @@ export function summarize(rows) {
   const seen = sum(withTools, "tools_seen");
   return {
     generatedAt: new Date().toISOString(),
-    sites: { total: rows.length, scanned: rows.length - by("skipped"), tools: by("tools"), no_tools: by("no-tools"), blocked: by("blocked"), error: by("error"), skipped: by("skipped") },
+    sites: {
+      total: rows.length,
+      scanned: rows.length - by("skipped"),
+      tools: by("tools"),
+      no_tools: by("no-tools"),
+      blocked: by("blocked"),
+      error: by("error"),
+      skipped: by("skipped"),
+      with_calls: withTools.filter((r) => r.tools_executed > 0).length,
+      nothing_to_call: withTools.filter((r) => r.tools_executed === 0).length,
+    },
+    directory_claimed_by_status: Object.fromEntries([...new Set(rows.map((r) => r.status))].map((st) => [st, sum(rows.filter((r) => r.status === st), "directory_tools")])),
+    by_api_surface: rows.reduce((acc, r) => {
+      if (!r.api_surface) return acc;
+      (acc[r.api_surface] ??= {})[r.status] = (acc[r.api_surface][r.status] ?? 0) + 1;
+      return acc;
+    }, {}),
     tools: {
       seen,
       directory_claimed: sum(withTools, "directory_tools"),

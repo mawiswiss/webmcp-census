@@ -91,7 +91,7 @@ test("summarize produces the headline numbers", () => {
     summarizeSite(skipped, {}, undefined),
   ];
   const s = summarize(rows);
-  assert.deepEqual(s.sites, { total: 5, scanned: 4, tools: 1, no_tools: 1, blocked: 1, error: 1, skipped: 1 });
+  assert.deepEqual(s.sites, { total: 5, scanned: 4, tools: 1, no_tools: 1, blocked: 1, error: 1, skipped: 1, with_calls: 1, nothing_to_call: 0 });
   assert.equal(s.tools.seen, 3);
   assert.equal(s.tools.readonly_pct, 66.7);
   assert.equal(s.tools.passed_pct, 100);
@@ -164,4 +164,18 @@ test("every rule the engine knows has a column, so no finding goes uncounted", (
   for (const id of [...builtinRules.map((r) => r.id), ...Object.keys(SMOKE_RULES)].filter((id) => id !== "no-tools")) assert.ok(RULES.includes(id), id);
   const page = { ...withTools.pages[0], smoke: { ...withTools.pages[0].smoke, findings: [{ ruleId: "result-string-json", severity: "info", tool: "search" }] } };
   assert.equal(summarizeSite({ ...withTools, pages: [page] }, siteA, undefined).r_result_string_json, 1);
+});
+
+test("the summary carries what the directory claimed per outcome and per API surface", () => {
+  const rows = [
+    summarizeSite(withTools, { ...siteA, apiSurface: "spec" }, undefined),
+    summarizeSite(empty, { category: "Demos", toolCount: 3, apiSurface: "polyfill" }, undefined),
+    summarizeSite(blocked, { category: "Commerce", toolCount: 2, apiSurface: "spec" }, undefined),
+  ];
+  assert.equal(rows[0].api_surface, "spec");
+  const s = summarize(rows);
+  assert.deepEqual(s.directory_claimed_by_status, { tools: 4, "no-tools": 3, blocked: 2 });
+  assert.deepEqual(s.by_api_surface, { polyfill: { "no-tools": 1 }, spec: { tools: 1, blocked: 1 } });
+  assert.equal(s.sites.with_calls, 1);
+  assert.equal(s.sites.nothing_to_call, 0);
 });
