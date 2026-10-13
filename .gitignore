@@ -4,3 +4,4 @@ data/ora/
 test-results/
 .webmcp-audit/
 data/*.log
+/webmcp-census-*.tar.gz
