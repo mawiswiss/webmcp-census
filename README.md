@@ -11,10 +11,27 @@ The Q3 2026 census covers the 2,964 live sites in the directory, audited on 13 O
 - `data/learnings.json`: the typical site, the sites that pass every call against the rest, the gaps, the cheap fixes and how many sites use each part of the standard.
 - `data/directory.json`: the directory snapshot the census ran on.
 - `data/versions.json`: browser, engine, time limits and the run window.
-- `skills/webmcp-readiness/SKILL.md`: the findings as a skill for coding agents.
+- `plugin/skills/webmcp-readiness/SKILL.md`: the findings as a skill for coding agents.
 - The raw records, one file per site, come with each [release](https://github.com/mawiswiss/webmcp-census/releases).
 
 How the census measures, and where it falls short: [METHOD.md](METHOD.md).
+
+## Install the skill
+
+The skill gives a coding agent the census findings while it writes or reviews WebMCP tools. Three ways to add it:
+
+1. Copy the file into your project, for Claude Code or any agent that reads skills from `.claude/skills/`:
+
+       mkdir -p .claude/skills/webmcp-readiness && curl -fsSL https://raw.githubusercontent.com/mawiswiss/webmcp-census/main/plugin/skills/webmcp-readiness/SKILL.md -o .claude/skills/webmcp-readiness/SKILL.md
+
+2. With the `skills` CLI. Untested until this repository is public:
+
+       npx skills add mawiswiss/webmcp-census
+
+3. As a Claude Code plugin:
+
+       /plugin marketplace add mawiswiss/webmcp-census
+       /plugin install webmcp-readiness@webmcp-census
 
 ## Reproduce
 
