@@ -18,6 +18,8 @@ Each tool's calls start from the original page. If an earlier tool navigated awa
 
 Every tool runs through the lint rules, and every call through the smoke rules, both listed in the [playwright-webmcp README](https://github.com/swissspidy/playwright-webmcp#rules). A tool passes when every valid call returned without an error and none of `result-error-on-valid-input`, `result-contains-null` or `result-not-serializable` fired for it.
 
+Every other finding is counted but does not fail a tool. Some rules carry the audit engine's own thresholds, such as a 1,500-character budget per result, set for a small model's context window. A finding is the rule's judgement, not a measured harm to an agent.
+
 While a read-only tool runs, the census records every request other than GET, HEAD and OPTIONS. One to the site's own origin is `result-writes`, one anywhere else `result-writes-cross-origin`, and that is mostly analytics. A POST that carries only GraphQL query documents is not recorded at all, because storefront APIs read that way.
 
 A POST does not fail a tool. From the outside it proves nothing: MCP relays speak JSON-RPC, which always posts, and many tool backends take their arguments in a POST body. The census sorts same-origin POSTs by path into MCP relays, analytics beacons and other targets, and reports them on their own. The other targets are the upper bound for read-only tools that really write.

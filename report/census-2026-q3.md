@@ -10,7 +10,7 @@ On 13 October 2026 the census loaded the 2,964 live sites of the webmcp.com dire
 - Each called tool got about four calls with valid input, 15,458 in total. 85.7% of those calls came back without an error.
 - 68.3% of the 3,842 tools worked on every one of their calls. One bad call is enough to count a tool as failed: an error, a `null` in the result or a result that cannot be serialised.
 - 38.6% of tools carry no annotation at all. `consequentialHint` is on 1.2% of tools.
-- The most common failure: 673 sites accept input their own schema rejects.
+- The most common finding: 673 sites accept input their own schema calls invalid. It does not fail a tool, and it only matters when the answer is wrong for that input.
 
 ![Share of executed read-only tools that pass, by directory category](pass-rate.svg)
 
