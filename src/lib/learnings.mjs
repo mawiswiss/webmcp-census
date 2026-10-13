@@ -45,11 +45,11 @@ export function topVsRest(rows) {
 const CHEAP = {
   "param-description-missing": "Add a description to every input property.",
   "description-length": "Write 20 to 600 characters that say what the tool does and when to call it.",
-  "result-contains-null": "Return an empty string, 0 or an empty array instead of null.",
+  "result-contains-null": "Where a tool can return null, leave the field out or return an empty value instead.",
   "result-undefined": "Return an object, even an empty one.",
   "result-string-json": "Return the object, not JSON inside a string.",
-  "result-too-large": "Cap the result at 1,500 characters: paginate or summarise.",
-  "result-accepts-invalid-input": "Validate input against your own schema and throw on a mismatch.",
+  "result-too-large": "The audit's 1,500-character budget is set for a small model's context window. Keep answers complete with the most important data first, and page long lists instead of cutting them.",
+  "result-accepts-invalid-input": "Reject input that would give a wrong answer, with an error naming the valid values. Coerce harmless mismatches such as \"10\" for 10, and treat null as omitted.",
   "schema-unsupported-keywords": "Flatten $ref, oneOf, anyOf and allOf into plain object schemas.",
 };
 const col = (id) => `r_${id.replace(/-/g, "_")}`;
