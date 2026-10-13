@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 464" width="720" height="464" role="img" aria-labelledby="t d">
+  <title id="t">Most common findings, by number of sites</title>
+  <desc id="d">The twelve lint and smoke findings that hit the most sites. POSTs from read-only tools are left out and covered in their own section. Source: data/summary.json rules.</desc>
+  <style>
+    .surface { fill: #fcfcfb; }
+    .mark { fill: #2a78d6; }
+    .dot { fill: #2a78d6; stroke: #fcfcfb; stroke-width: 2; }
+    .grid { stroke: #e6e5e1; stroke-width: 1; }
+    .ref { stroke: #52514e; stroke-width: 1; stroke-dasharray: 4 4; }
+    .title { fill: #0b0b0b; font: 600 15px system-ui, -apple-system, 'Segoe UI', sans-serif; }
+    .label { fill: #0b0b0b; font: 13px system-ui, -apple-system, 'Segoe UI', sans-serif; }
+    .value { fill: #0b0b0b; font: 600 13px system-ui, -apple-system, 'Segoe UI', sans-serif; font-variant-numeric: tabular-nums; }
+    .muted { fill: #52514e; font: 12px system-ui, -apple-system, 'Segoe UI', sans-serif; font-variant-numeric: tabular-nums; }
+    @media (prefers-color-scheme: dark) {
+      .surface { fill: #1a1a19; }
+      .mark { fill: #3987e5; }
+      .dot { fill: #3987e5; stroke: #1a1a19; }
+      .grid { stroke: #333331; }
+      .ref { stroke: #c3c2b7; }
+      .title, .label, .value { fill: #ffffff; }
+      .muted { fill: #c3c2b7; }
+    }
+  </style>
+  <rect class="surface" width="720" height="464" rx="8"/>
+  <text class="title" x="24" y="32">Most common findings, by number of sites</text>
+  <line class="grid" x1="254" x2="254" y1="56" y2="424"/>
+  <text class="muted" x="254" y="442" text-anchor="middle">0</text>
+  <line class="grid" x1="364.2857142857143" x2="364.2857142857143" y1="56" y2="424"/>
+  <text class="muted" x="364.2857142857143" y="442" text-anchor="middle">200</text>
+  <line class="grid" x1="474.57142857142856" x2="474.57142857142856" y1="56" y2="424"/>
+  <text class="muted" x="474.57142857142856" y="442" text-anchor="middle">400</text>
+  <line class="grid" x1="584.8571428571429" x2="584.8571428571429" y1="56" y2="424"/>
+  <text class="muted" x="584.8571428571429" y="442" text-anchor="middle">600</text>
+  <text class="label" x="242" y="83" text-anchor="end">result-accepts-invalid-input</text>
+  <path class="mark" d="M254,70 H620.0085714285715 Q624.0085714285715,70 624.0085714285715,74 V84 Q624.0085714285715,88 620.0085714285715,88 H254 Z"/>
+  <text class="value" x="632.0085714285715" y="83">671</text>
+  <text class="label" x="242" y="113" text-anchor="end">param-description-missing</text>
+  <path class="mark" d="M254,100 H565.9685714285714 Q569.9685714285714,100 569.9685714285714,104 V114 Q569.9685714285714,118 565.9685714285714,118 H254 Z"/>
+  <text class="value" x="577.9685714285714" y="113">573</text>
+  <text class="label" x="242" y="143" text-anchor="end">result-too-large</text>
+  <path class="mark" d="M254,130 H562.6600000000001 Q566.6600000000001,130 566.6600000000001,134 V144 Q566.6600000000001,148 562.6600000000001,148 H254 Z"/>
+  <text class="value" x="574.6600000000001" y="143">567</text>
+  <text class="label" x="242" y="173" text-anchor="end">capability-trifecta</text>
+  <path class="mark" d="M254,160 H514.6857142857143 Q518.6857142857143,160 518.6857142857143,164 V174 Q518.6857142857143,178 514.6857142857143,178 H254 Z"/>
+  <text class="value" x="526.6857142857143" y="173">480</text>
+  <text class="label" x="242" y="203" text-anchor="end">result-error-on-valid-input</text>
+  <path class="mark" d="M254,190 H446.30857142857144 Q450.30857142857144,190 450.30857142857144,194 V204 Q450.30857142857144,208 446.30857142857144,208 H254 Z"/>
+  <text class="value" x="458.30857142857144" y="203">356</text>
+  <text class="label" x="242" y="233" text-anchor="end">naming-consistency</text>
+  <path class="mark" d="M254,220 H392.82 Q396.82,220 396.82,224 V234 Q396.82,238 392.82,238 H254 Z"/>
+  <text class="value" x="404.82" y="233">259</text>
+  <text class="label" x="242" y="263" text-anchor="end">param-description-length</text>
+  <path class="mark" d="M254,250 H379.5857142857143 Q383.5857142857143,250 383.5857142857143,254 V264 Q383.5857142857143,268 379.5857142857143,268 H254 Z"/>
+  <text class="value" x="391.5857142857143" y="263">235</text>
+  <text class="label" x="242" y="293" text-anchor="end">result-contains-null</text>
+  <path class="mark" d="M254,280 H365.8 Q369.8,280 369.8,284 V294 Q369.8,298 365.8,298 H254 Z"/>
+  <text class="value" x="377.8" y="293">210</text>
+  <text class="label" x="242" y="323" text-anchor="end">description-length</text>
+  <path class="mark" d="M254,310 H361.94 Q365.94,310 365.94,314 V324 Q365.94,328 361.94,328 H254 Z"/>
+  <text class="value" x="373.94" y="323">203</text>
+  <text class="label" x="242" y="353" text-anchor="end">result-string-json</text>
+  <path class="mark" d="M254,340 H345.39714285714285 Q349.39714285714285,340 349.39714285714285,344 V354 Q349.39714285714285,358 345.39714285714285,358 H254 Z"/>
+  <text class="value" x="357.39714285714285" y="353">173</text>
+  <text class="label" x="242" y="383" text-anchor="end">similar-descriptions</text>
+  <path class="mark" d="M254,370 H301.28285714285715 Q305.28285714285715,370 305.28285714285715,374 V384 Q305.28285714285715,388 301.28285714285715,388 H254 Z"/>
+  <text class="value" x="313.28285714285715" y="383">93</text>
+  <text class="label" x="242" y="413" text-anchor="end">schema-unsupported-keywords</text>
+  <path class="mark" d="M254,400 H299.62857142857143 Q303.62857142857143,400 303.62857142857143,404 V414 Q303.62857142857143,418 299.62857142857143,418 H254 Z"/>
+  <text class="value" x="311.62857142857143" y="413">90</text>
+</svg>
