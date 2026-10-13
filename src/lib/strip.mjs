@@ -1,10 +1,10 @@
 import { scrubText, stripQuery } from "./scrub.mjs";
 
 const scrubFindings = (findings) =>
-  findings?.map((f) => ({
+  findings?.map(({ help, ...f }) => ({
     ...f,
-    ...(f.message !== undefined ? { message: scrubText(f.message) } : {}),
-    ...(f.help !== undefined ? { help: scrubText(f.help) } : {}),
+    ...(f.message !== undefined ? { message: scrubText(f.message).slice(0, 500) } : {}),
+    ...(help !== undefined && !help.startsWith("Input was") ? { help: scrubText(help) } : {}),
   }));
 
 export function stripPage(page) {

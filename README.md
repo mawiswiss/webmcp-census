@@ -43,7 +43,7 @@ While a read-only tool runs, the census records every request other than GET, HE
 
 A POST does not fail a tool. From the outside it proves nothing: MCP relays speak JSON-RPC, which always posts, and many tool backends take their arguments in a POST body. The census sorts same-origin POSTs by path into MCP relays, analytics beacons and other targets, and reports them on their own. The other targets are the upper bound for read-only tools that really write.
 
-The census stores no tool results and no call arguments. It keeps the tool definitions, the findings and the outcome of each call. URLs it records itself, such as request targets, frame addresses and navigation targets, keep their origin and path only, so the analytics identifiers and session tokens in their query strings never reach the data. Tool definitions stay exactly as the sites publish them.
+The census stores no tool results and no full call arguments. It keeps the tool definitions, the findings and the outcome of each call. A finding's message, capped at 500 characters, can name the generated input that triggered it, quote the tool's own error text, or quote the short piece of a result that tripped a rule. The inputs are built from each site's own schema, never from real data. URLs it records itself, such as request targets, frame addresses and navigation targets, keep their origin and path only, so the analytics identifiers and session tokens in their query strings never reach the data. Tool definitions stay exactly as the sites publish them.
 
 ### How sites are classified
 

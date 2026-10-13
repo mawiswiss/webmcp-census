@@ -57,3 +57,14 @@ test("scrubRecord cleans a stored host record, and a clean record stays as it is
   assert.deepEqual(scrubRecord(out), out);
   assert.deepEqual(scrubRecord({ status: "skipped", host: "h.example", reason: "robots" }), { status: "skipped", host: "h.example", reason: "robots" });
 });
+
+test("stored findings keep no generated call input and no long echoes", () => {
+  const page = { url: "https://h.example/", status: "ok", smoke: { counts: {}, runs: [], findings: [
+    { ruleId: "result-error-on-valid-input", tool: "a", message: `Tool "a" failed: ${"x".repeat(2000)}`, help: 'Input was {"q":"example"}' },
+    { ruleId: "result-too-large", tool: "a", message: "Result is 4,000 characters.", help: "Paginate or summarise." },
+  ] } };
+  const [failed, large] = stripPage(page).smoke.findings;
+  assert.ok(!("help" in failed), "the generated input is gone");
+  assert.equal(failed.message.length, 500);
+  assert.equal(large.help, "Paginate or summarise.", "advice stays");
+});
