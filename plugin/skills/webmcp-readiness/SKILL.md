@@ -1,159 +1,204 @@
 ---
 name: webmcp-readiness
-description: "Use when registering, reviewing or fixing WebMCP tools (document.modelContext.registerTool, readOnlyHint, consequentialHint, inputSchema descriptions, tool results, declarative form tools). Carries what the Q3 2026 WebMCP Census found when it called the read-only tools of 2,964 directory sites: the baseline a typical site meets, what the best sites do differently, what the audit flagged most often and which of those findings actually hurt an agent, and a checklist to run before a tool goes live."
+description: "Use when adding, reviewing or fixing WebMCP tools on a website: document.modelContext.registerTool, declarative form tools (toolname), annotations such as readOnlyHint and consequentialHint, input schemas and tool results. Carries the WebMCP API as specified and as Chrome 156 implements it, what the WebMCP Census of 2,964 sites found that most sites get right and wrong, the quick wins, and how to check tools with Pascal Birchler's ESLint plugin, linter, Playwright fixture and audit."
 ---
 
-# WebMCP readiness, from the Q3 2026 census
+# WebMCP readiness
 
-From the WebMCP Census, Q3 2026, run on 13th October 2026. The latest version of this skill lives at https://github.com/mawiswiss/webmcp-census/blob/main/plugin/skills/webmcp-readiness/SKILL.md.
+By Marc Wieland (https://marcwieland.name), from the WebMCP Census, Q3 2026, run on 13th October 2026. The latest version of this skill lives at https://github.com/mawiswiss/webmcp-census/blob/main/plugin/skills/webmcp-readiness/SKILL.md, the data at https://github.com/mawiswiss/webmcp-census.
 
-The WebMCP Census loaded the 2,964 live sites of the webmcp.com directory in Chromium 156 with WebMCP enabled. It called the tools annotated `readOnlyHint: true` whose name has no risky word like `send` or `delete`, with inputs derived from each tool's own schema. 1,748 sites registered tools the browser could see, 9,149 tools in total. 3,842 of them qualified and were called, on 931 sites. Tools without `readOnlyHint` were left alone, which does not make them tools that change something: 3,529 tools carry no annotation at all. Each called tool got about four calls with valid input, 15,458 in total, and 85.7% of those calls returned without an error. 68.3% of the called tools passed every one of their calls, because one error, `null` or unserialisable result fails the tool. The numbers below come from the census data files [`summary.json`](https://github.com/mawiswiss/webmcp-census/blob/main/data/summary.json) and [`learnings.json`](https://github.com/mawiswiss/webmcp-census/blob/main/data/learnings.json).
+## How to use this skill
 
-## How to read the findings
+1. Get the API right first. The section "The WebMCP API" is the part that has to be correct.
+2. Compare the tools with what the census found. Those are findings, not rules: what most sites get wrong and should watch, and what most get right and should keep.
+3. Check with Pascal Birchler's tools, and read their warnings as questions.
+4. Never make a working tool worse to clear a finding. Before changing a tool, ask whether an agent gets a better answer afterwards.
+5. Install or configure tooling only when the user wants it. Ask before changing `package.json` or config files.
 
-The census counts what the rules of [@swissspidy/webmcp-audit](https://www.npmjs.com/package/@swissspidy/webmcp-audit) flag. A rule is a test with its own thresholds, not proof that an agent got a worse answer. Only three findings fail a tool in the census: an error on valid input, `null` in the result, and a result that cannot be serialised. Two of the most common findings do not: input the schema calls invalid, and results over 1,500 characters.
+## The WebMCP API
 
-Before changing a working tool to clear a finding, check that an agent gets a better answer afterwards. Do not add schema constraints only to steer the audit's input generator, do not reject input that used to work, and do not cut answers to fit a character budget.
+As of the spec draft of 9th October 2026 (https://webmachinelearning.github.io/webmcp/) and Chrome 156.
 
-## Make the tools visible first
+### Where it lives and where it runs
 
-933 sites the directory lists with tools registered nothing Chromium could see. Before anything else, check that the browser sees the tools.
+- The API is `document.modelContext`, in secure contexts only (HTTPS or localhost). Chrome removed `navigator.modelContext` in Chrome 152. A polyfill must hand over to the native `document.modelContext` when it exists.
+- No stable browser ships it yet. Chrome runs an origin trial from Chrome 149, extended to Chrome 162, with no shipping date. Edge runs its own origin trial. Firefox is neutral, Safari opposes it.
+- To test locally, switch on `chrome://flags/#enable-webmcp-testing`. DevTools then lists the tools under Application, WebMCP, logs every call and runs a tool by hand.
 
-- Register on `document.modelContext`. Chrome 156 has no `navigator.modelContext`. A page that puts its own object there registers into nothing: 28 sites hid 135 tools that way.
-- Of the 537 directory sites using a WebMCP polyfill, 459 showed no tools to native Chromium. A polyfill must hand over to the native `document.modelContext` when it exists.
-- Register at or soon after page load, without needing a click or a login. The census waited 1.5 seconds after the load event, then until the tool list had held still for a second, ten seconds at most. Tools that came later were not counted.
-
-## The baseline a typical site meets
-
-The median site with tools:
-
-- registers 4 tools,
-- annotates 71.4% of them, and declares a third read-only,
-- writes descriptions of about 190 characters,
-- describes every parameter,
-- passes 87.5% of its executed tools.
-
-A site below this is behind the median of sites that ship WebMCP at all.
-
-## What sites that pass every call do differently
-
-Comparing the 454 sites where every called tool passed with the 477 where at least one failed:
-
-- Shorter descriptions: a median of 211 characters against 360.
-- More parameters described: 89.3% against 79.6%.
-- Fewer tools that return third-party text: 18.8% against 30.4%.
-- Fewer tools: 5.2 against 7.9, which partly explains itself, since fewer tools means fewer chances to fail.
-
-Annotations do not separate the groups: both annotate about nine in ten tools. Treat this as a description of good sites, not a recipe.
-
-## What the audit flagged, most common first
-
-### Annotations missing (959 sites, 3,529 tools)
-
-An agent cannot tell whether a call is safe, so it either asks every time or asks never. Only 1.2% of tools declare `consequentialHint`, on 49 sites.
-
-Before:
+### Registering a tool
 
 ```js
-document.modelContext.registerTool({ name: "get_order_status", description, inputSchema, execute });
+const controller = new AbortController();
+
+await document.modelContext.registerTool({
+  name: "search_trips",
+  title: "Search trips",
+  description: "Find trips by country or city. Use it when the user asks where or when someone travelled.",
+  inputSchema: {
+    type: "object",
+    properties: { place: { type: "string", description: "Country or city, for example Peru or Lima." } },
+    required: ["place"],
+  },
+  annotations: { readOnlyHint: true },
+  async execute({ place }, { signal }) {
+    return { trips: await findTrips(place, { signal }) };
+  },
+}, { signal: controller.signal });
+
+controller.abort();
 ```
 
-After:
+- `name` is required: 1 to 128 characters from `A-Z a-z 0-9 _ - .`. `description` is required and must not be empty. `title` is optional and meant for browser UI. `inputSchema` is optional JSON Schema.
+- `registerTool()` returns a promise. It rejects with `InvalidStateError` for a name already in use, an invalid name or an empty description.
+- Aborting the signal unregisters the tool. `unregisterTool()`, `provideContext()` and `clearContext()` are gone, and there is no `updateTool()`: abort, then register again.
+- `execute(input, { signal })` gets the parsed input. The signal aborts when the caller cancels.
+- Return any value that survives JSON serialisation, usually an object. Chrome 156 turns objects into JSON and passes strings through as text. There is no `outputSchema` yet.
+- When a call fails, throw an `Error`. A rejected promise reaches the agent as a failed call. An error message returned as a normal result looks like success.
 
-```js
-document.modelContext.registerTool({ name: "get_order_status", description, inputSchema, annotations: { readOnlyHint: true }, execute });
-document.modelContext.registerTool({ name: "cancel_order", description, inputSchema, annotations: { consequentialHint: true }, execute });
+### Annotations
+
+All four default to false.
+
+- `readOnlyHint`: the tool only reads. An agent can call it without asking.
+- `consequentialHint`: the tool does something real or irreversible. The agent should confirm with the person first.
+- `untrustedContentHint`: the result can contain text from users or third parties. The agent should treat it as data, not instructions.
+- `debugging`: developer tooling. End-user agents can leave it out. Supported from Chrome 156.
+
+### Declarative tools from forms
+
+Chrome supports and documents this (https://developer.chrome.com/docs/ai/webmcp/declarative-api). The spec draft dropped it on 8th October 2026 and keeps it in the explainer, so treat it as Chrome's for now.
+
+```html
+<form toolname="search_products" tooldescription="Search the catalogue by keyword." toolautosubmit>
+  <input name="q" toolparamdescription="Keyword, for example rain jacket.">
+</form>
 ```
 
-### Invalid input accepted (673 sites)
+- `toolname` and `tooldescription` are both required. Without `toolautosubmit`, the person has to click submit.
+- `toolparamdescription` describes a field. Without it, Chrome uses the label text.
+- In the submit handler, `event.agentInvoked` is true for an agent's call. Call `event.preventDefault()`, then `event.respondWith(promise)` to send a result back.
 
-The tool answers input its own schema calls invalid, such as a number where a string belongs or a value outside its enum. This does not fail a tool in the census, and it only hurts when the answer is wrong for that input. A filter value the tool silently ignores returns unfiltered results that look filtered. A `limit` of `"10"` read as 10 harms nobody.
+### Frames and other origins
 
-Reject input that would give a wrong answer, with an error that names the valid values. Coerce harmless mismatches, and treat `null` as omitted, because some clients send it to mean "leave this out".
+- Same-origin iframes can register tools. A cross-origin iframe needs `allow="tools"`, the Permissions Policy feature `tools`.
+- `exposedTo: [origin]` in the register options shares a tool with other secure origins. Nobody in the census used it.
+
+### Chrome's own guidance
+
+Chrome recommends names up to 30 characters, descriptions up to 500, parameter descriptions up to 150, and tool output up to 1.5K characters (https://developer.chrome.com/docs/ai/webmcp/secure-tools). They are recommendations, not enforced, and Chrome says they may change.
+
+## What the census found
+
+The census loaded the 2,964 sites of the webmcp.com directory in Chrome 156 with WebMCP on. 1,748 showed tools Chrome could see. On 931 sites it called the 3,842 tools labelled read-only that had no risky word such as `send` in the name, 13,616 calls with valid input in total. Under the audit's strict rules, 68.7% of those tools worked on every call. Counting the ones that only stumble over a `null`, a made-up id, a login or an edge value, 84.6% work. The numbers come from [`summary.json`](https://github.com/mawiswiss/webmcp-census/blob/main/data/summary.json) and [`learnings.json`](https://github.com/mawiswiss/webmcp-census/blob/main/data/learnings.json).
+
+These are findings: what most sites do. Use them as a list of things to keep and things to watch, not as rules.
+
+### Keep doing
+
+- Clean definitions. 98% of sites with tools have no lint errors, 95% use plain schemas, and almost none reuse a tool name.
+- Small, focused tool sets. The median site has 4 tools. Sites where every call worked had about 5 tools, against 8 on sites where something failed.
+- Descriptions of a useful length. The median site writes about 190 characters per description.
+- Described parameters. Two thirds of sites describe every parameter.
+- Labels on most tools. 61% of tools carry an annotation, and 43% are labelled read-only.
+- Marked third-party text. 357 sites set `untrustedContentHint`.
+- Working calls. 87% of the calls with valid input came back without an error.
+
+### Watch out for
+
+1. Tools Chrome cannot see. 933 sites showed none. About half use a polyfill that never hands over to Chrome, and 28 register on the old `navigator.modelContext`. Register at or soon after load, without a click or a login, and check the DevTools panel.
+2. Missing labels. 39% of tools carry no annotation. Only 49 sites mark a tool as `consequentialHint`, while the directory counts tools that act on 919 sites.
+3. Undescribed parameters on larger tool sets. 41% of all parameters lack a description, on 577 sites. The usual ones are ids, slugs, currencies and dates. Say the format and give an example: `"Arrival date as YYYY-MM-DD."`
+4. Errors that look like answers. 332 tools return an error message as a normal result. Throw an `Error` instead.
+5. `null` in results. 211 sites, and leaving it out would let 337 failing tools pass. The audit treats it as a failure because the Prompt API spec expects an object as a tool result. Fix it where the tool can really return `null`, for example a missing field. A guard for a value your code never sets to `null` adds nothing.
+6. Third-party text next to tools that act. 482 sites return reviews, comments or search results on a page whose other tools act. Set `untrustedContentHint: true` on the tool that returns them.
+
+Three more findings need judgement before you act on them.
+
+Input the schema calls invalid, on 673 sites. This does not fail a tool, and it only hurts when the answer is wrong for that input. A filter value the tool ignores returns unfiltered results that look filtered. A `limit` of `"10"` read as 10 harms nobody. Reject input that would give a wrong answer, with an error naming the valid values. Coerce harmless mismatches, and treat `null` as omitted, because some clients send it to mean "leave this out".
 
 ```js
-execute: async ({ status, limit }) => {
+async execute({ status, limit }) {
   if (status != null && !STATUSES.includes(status)) throw new Error(`status must be one of: ${STATUSES.join(", ")}`);
   const n = limit == null ? 20 : Number(limit);
   if (!Number.isInteger(n) || n < 1) throw new Error("limit must be a whole number from 1");
   return search({ status: status ?? undefined, limit: n });
-},
+}
 ```
 
-### Parameters without a description (577 sites, 9,830 parameters)
-
-The most common ones are `hotelId`, `slug`, `currency` and check-in and check-out dates. The agent guesses the format.
-
-Before: `checkIn: { type: "string" }`
-
-After: `checkIn: { type: "string", format: "date", description: "Arrival date as YYYY-MM-DD." }`
-
-### Results over 1,500 characters (569 sites)
-
-The audit's budget is 1,500 characters, set for a small model's context window. It does not fail a tool in the census. For the cloud agents most likely to call a tool, 3,000 characters is roughly 750 tokens, and a complete answer is usually the better one.
-
-Put the most important data first, so a cut, if one is needed, loses the least. Page long lists with a modest default, the total and a way to the next page. Never cut an answer alphabetically, never hide items behind "and 14 more" without a way to fetch them, and do not stack a hard maximum on top of a character budget.
+Results over 1,500 characters, on 569 sites. This does not fail a tool either. Chrome recommends up to 1.5K characters per result, so aim for concise answers, but a cut that drops what the agent needs is worse than a long answer. On one site that followed the budget strictly, listing 134 trips took 17 calls instead of one, and a yearly summary listed countries alphabetically and dropped the one with 92 days. Put the most important data first. Page long lists with a modest default, the total and a way to the next page. Never cut alphabetically, never hide items behind "and 14 more" without a way to fetch them, and do not stack a hard maximum on top of a character budget.
 
 ```js
-execute: async ({ query, offset = 0, limit = 25 }) => {
+async execute({ query, offset = 0, limit = 25 }) {
   const items = (await search(query)).sort((a, b) => b.relevance - a.relevance);
   const next = offset + limit < items.length ? offset + limit : undefined;
   return { items: items.slice(offset, offset + limit), total: items.length, nextOffset: next };
-},
+}
 ```
 
-### Errors on valid input (358 sites)
+Errors on edge values. The audit also sends an empty string, the other enum values and the schema's minimum and maximum. 91 tools failed only on one of those. Declare the constraints that are true for the tool, such as `minLength: 1` when an empty query means nothing. Do not add constraints that are not true, like a `maxLength` on every string, only to steer the audit.
 
-A schema-valid call throws or reports an error, for example because a backend is down or the schema allows inputs the backend refuses. This fails a tool. Declare the constraints that are true for the tool, such as `minLength: 1` when an empty query means nothing, and test every tool with its own example inputs. A constraint that is not true, like a `maxLength` on every string, only steers the audit's generator.
+### Quick wins
 
-### `null` in results (212 sites)
+Each takes minutes, and none needs a redesign.
 
-According to the audit engine's own rule, Chrome's Prompt API rejects `null`, so the call can fail on the agent's side although the site answered. This fails a tool, and fixing it alone would flip 382 failing tools to passing. Fix it where the tool can really return `null`, for example from a missing field in the data. A guard for a value your own code never sets to `null` adds nothing.
+1. Switch on the flag, open DevTools, Application, WebMCP, and check every tool is listed.
+2. Label every tool: `readOnlyHint` or `consequentialHint`, and `untrustedContentHint` where it applies.
+3. Describe every parameter with its format and an example.
+4. Throw an `Error` when a call fails.
+5. Leave out fields that would be `null`.
+6. Give each tool a `title`.
+7. Turn a search or contact form you already have into a declarative tool with `toolname` and `tooldescription`.
 
-Before: `return { name: product.name, price: product.price };`
+## Check with Pascal Birchler's tools
 
-After: `return { name: product.name, ...(product.price != null && { price: product.price }) };`
+Pascal's packages share one rule set, `@swissspidy/webmcp-lint` (rules: https://github.com/swissspidy/playwright-webmcp/tree/main/docs/rules). Offer the one that fits, and install it only when the user agrees.
 
-### Descriptions too short or too long (203 sites)
+In the editor and on every ESLint run, checking `registerTool()` in the source:
 
-The audit's range is 20 to 600 characters. Say what the tool does and when to call it.
+```sh
+npm install --save-dev @swissspidy/eslint-plugin-webmcp eslint
+```
 
-### JSON returned as a string (173 sites)
+```js
+// eslint.config.js
+import webmcp from "@swissspidy/eslint-plugin-webmcp";
+export default [webmcp.configs.recommended];
+```
 
-Before: `return JSON.stringify(result);`
+For tool definitions you already have as JSON:
 
-After: `return result;`
+```sh
+npx @swissspidy/webmcp-lint tools.json --fail-on warning
+```
 
-### Unsupported schema keywords (91 sites)
+In Playwright tests, against the browser's own WebMCP:
 
-Flatten `$ref`, `oneOf`, `anyOf` and `allOf` into plain object schemas with `properties` and `required`.
+```sh
+npm install --save-dev @swissspidy/playwright-webmcp @swissspidy/webmcp-lint @playwright/test
+```
 
-### Third-party text next to tools that act (482 sites)
+Pass `--enable-features=WebMCP` in `use.launchOptions.args` of `playwright.config`, import `test` and `expect` from `@swissspidy/playwright-webmcp`, and use the `webmcp` fixture: `toHaveTool`, `toPassLint`, `toPassSmoke`, `toMatchToolContract`.
 
-A tool that returns reviews, comments or search results from others sits on a page whose other tools act. Declare `untrustedContentHint: true` on it so an agent treats the result as data, not instructions. 28 sites had instruction-like text in tool descriptions, and 17 returned it in results without the hint.
+Against a running site, staging included:
 
-## POST requests and readOnlyHint
+```sh
+npm install --save-dev @swissspidy/webmcp-audit @playwright/test
+npx playwright install chromium
+npx @swissspidy/webmcp-audit https://staging.example --smoke --out .webmcp-audit
+```
 
-196 sites have read-only tools that POST to their own origin. Sorted by path, 46 post to an MCP relay, because JSON-RPC always posts, and 51 to analytics, and a site can be in both groups. A POST is not proof of a write, and nobody outside can verify `readOnlyHint`. Declare it only when the tool changes nothing, and keep the backend honest about it.
+`--smoke` calls only tools labelled read-only. Useful options: `--fail-on warning`, `--baseline .webmcp-audit/report.json` to catch changed tools, `--header "Authorization: Bearer ..."` for a protected staging site, `--format github` for CI. In the library and the Playwright fixture, the smoke options `maxResultChars` and `maxDurationMs` set the budgets. Set them for the agents you target rather than bending a tool to fit the default.
 
-## What almost nobody ships yet
-
-Share of the 1,748 sites with tools:
-
-- `consequentialHint`: 2.8%. The next one to add, since agents need to know which acting tools to confirm with a person.
-- Declarative `<form toolname>` tools: 15.2%. The cheapest WebMCP there is.
-- `untrustedContentHint`: 20.4%.
-- Tool titles: 24.4%.
-- Cross-origin exposure with `exposedTo`: nobody yet.
+Reading the report: three findings fail a tool, an error on valid input, `null` in the result and a result that cannot be serialised. The rest are warnings to weigh against what an agent needs.
 
 ## Checklist before a tool goes live
 
-- Registered on `document.modelContext`, soon after load, without a click or login.
-- Name of 1 to 128 characters from `A-Z a-z 0-9 _ . -`, in one naming style across the page.
-- Description of 20 to 600 characters that says what the tool does and when to call it.
-- Every input property has a description. No `$ref`, `oneOf`, `anyOf` or `allOf`.
-- `readOnlyHint: true` only if the tool sends no POST, PUT, PATCH or DELETE that changes state and does not navigate. `consequentialHint: true` on every tool that acts.
-- `untrustedContentHint: true` when the result carries text written by users or third parties.
+- Registered on `document.modelContext`, soon after load, without a click or a login, and listed in DevTools.
+- Name of 1 to 128 characters from `A-Z a-z 0-9 _ . -`, ideally up to 30, in one naming style across the page.
+- Description that says what the tool does and when to call it, ideally up to 500 characters.
+- Every input property described with its format and an example. No `$ref`, `oneOf`, `anyOf` or `allOf`.
+- `readOnlyHint: true` only if the tool changes nothing and does not navigate. `consequentialHint: true` on every tool that acts. `untrustedContentHint: true` when the result carries text written by users or third parties.
 - Results are objects, without `null` where the tool can produce it, never JSON inside a string. Complete, with the most important data first. Long lists page with a modest default, the total and a way to the next page.
-- Valid input returns in under 8 seconds. Input that would give a wrong answer throws, with the valid values in the error. Harmless mismatches, such as `"10"` for 10 or `null` for an omitted field, are accepted.
-- Tested from the outside: `npx @swissspidy/webmcp-audit https://staging.example --smoke`, or `npx lighthouse https://staging.example --only-categories=agentic-browsing`. Read their warnings as questions, not orders.
+- Input that would give a wrong answer throws, with the valid values in the error. Harmless mismatches, such as `"10"` for 10 or `null` for an omitted field, are accepted.
+- Failures throw an `Error`. Valid input returns in under 8 seconds.
+- Checked with the audit or the Playwright fixture, and its warnings read as questions, not orders.
