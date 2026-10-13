@@ -2,6 +2,7 @@ import { WebMCP, runSmoke, selectSmokeTools, watchPage } from "@swissspidy/playw
 import { lint, toContract } from "@swissspidy/webmcp-lint";
 import { boundedCall, orFail, withBudget, within } from "./bounded.mjs";
 import { debug } from "./debug.mjs";
+import { selectableIn } from "./select.mjs";
 
 // A fixed timezone and locale keep the machine's own settings away from the sites and out of the data.
 export const CONTEXT_OPTIONS = { timezoneId: "UTC", locale: "en-US" };
@@ -60,9 +61,14 @@ export async function auditPage(browser, url, { settleMs = 1500, callLimitMs = 2
       }
     }, deadline), callLimitMs);
     const home = page.url();
-    const { selected, skipped } = selectSmokeTools(snapshot.tools, smokeOptions);
+    // A call is routed by name alone, so a name whose copies disagree on being safe is never called.
+    const choose = selectableIn(snapshot.tools, smokeOptions.tools);
+    const { selected, skipped } = selectSmokeTools(snapshot.tools, { ...smokeOptions, tools: choose });
+    const called = new Set();
     const smoke = { runs: [], findings: [], counts: {}, skipped: skipped.map((t) => t.name), unfinished: [] };
     for (const [i, tool] of selected.entries()) {
+      if (called.has(tool.name)) continue;
+      called.add(tool.name);
       const left = () => selected.slice(i).map((t) => t.name);
       if (Date.now() > deadline) {
         smoke.unfinished.push(...left());
@@ -78,7 +84,7 @@ export async function auditPage(browser, url, { settleMs = 1500, callLimitMs = 2
         }
       }
       debug("smoke", tool.name);
-      const part = await runSmoke(snapshot.tools, call, { ...smokeOptions, tools: [tool.name] }, watchPage(page));
+      const part = await runSmoke(snapshot.tools, call, { ...smokeOptions, tools: (t) => t === tool }, watchPage(page));
       addToolRuns(smoke, tool.name, part);
     }
     if (smoke.unfinished.length && !smoke.aborted) smoke.aborted = "time budget used up";

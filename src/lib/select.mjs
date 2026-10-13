@@ -17,3 +17,7 @@ export function hasSideEffectWord(name) {
 export function selectTool(tool) {
   return isReadOnlyTool(tool) && !hasSideEffectWord(tool.name);
 }
+
+export function selectableIn(tools, allowed = selectTool) {
+  return (tool) => allowed(tool) && tools.filter((other) => other.name === tool.name).every(allowed);
+}
