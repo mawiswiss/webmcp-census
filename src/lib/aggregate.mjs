@@ -1,13 +1,7 @@
-import { isReadOnlyTool } from "@swissspidy/webmcp-lint";
+import { SMOKE_RULES, builtinRules, isReadOnlyTool } from "@swissspidy/webmcp-lint";
 import { median, pct } from "./stats.mjs";
 
-export const RULES = [
-  "result-error-on-valid-input", "result-contains-null", "result-not-serializable", "result-undefined", "result-too-large", "result-slow",
-  "result-accepts-invalid-input", "result-writes", "result-writes-cross-origin", "result-navigates", "untrusted-content-unmarked", "result-suspicious-content",
-  "description-missing", "description-length", "param-description-missing", "param-description-length", "schema-shape", "schema-no-null-literals",
-  "schema-depth", "schema-unsupported-keywords", "description-injection", "sensitive-params", "duplicate-tool-name", "tool-shadowing",
-  "third-party-registration", "similar-descriptions", "too-many-tools", "naming-consistency", "capability-trifecta",
-];
+export const RULES = [...builtinRules.map((r) => r.id), ...Object.keys(SMOKE_RULES)].filter((id) => id !== "no-tools");
 // A POST from a read-only tool fails nothing: RPC-style tool backends and MCP relays read over POST, see classifyWrite.
 export const EXEC_FAIL = new Set(["result-error-on-valid-input", "result-contains-null", "result-not-serializable"]);
 const MCP_RELAY = /\/(web)?mcp(\.php)?(\/rpc)?\/?$/i;

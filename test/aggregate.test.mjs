@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { builtinRules, SMOKE_RULES } from "@swissspidy/webmcp-lint";
 import { classify, classifyWrite, summarizeSite, summarize, toCsv, RULES } from "../src/lib/aggregate.mjs";
 
 const ro = { readOnlyHint: true };
@@ -157,4 +158,10 @@ test("a site's same-origin POSTs are counted by kind, cross-origin ones are not"
   const crossOnly = { ...withTools, pages: [{ ...withTools.pages[0], smoke: { ...withTools.pages[0].smoke, runs: [{ tool: "liar", kind: "valid-minimal", ok: true, durationMs: 5, writes: [{ method: "POST", url: "https://ga.example/g/collect", crossOrigin: true }] }] } }] };
   assert.equal(summarizeSite(crossOnly, siteA, undefined).tools_posting, 0);
   assert.deepEqual(summarize([row]).sites_posting, { any: 1, mcp: 0, analytics: 0, other: 1 });
+});
+
+test("every rule the engine knows has a column, so no finding goes uncounted", () => {
+  for (const id of [...builtinRules.map((r) => r.id), ...Object.keys(SMOKE_RULES)].filter((id) => id !== "no-tools")) assert.ok(RULES.includes(id), id);
+  const page = { ...withTools.pages[0], smoke: { ...withTools.pages[0].smoke, findings: [{ ruleId: "result-string-json", severity: "info", tool: "search" }] } };
+  assert.equal(summarizeSite({ ...withTools, pages: [page] }, siteA, undefined).r_result_string_json, 1);
 });
