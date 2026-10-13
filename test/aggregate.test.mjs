@@ -179,3 +179,18 @@ test("the summary carries what the directory claimed per outcome and per API sur
   assert.equal(s.sites.with_calls, 1);
   assert.equal(s.sites.nothing_to_call, 0);
 });
+
+test("a tool listed on two pages counts its calls and findings once", () => {
+  const page = (url) => ({
+    url, status: "ok",
+    snapshot: { frames: [{ api: "native" }], tools: [tool("search", ro, searchSchema)] },
+    lint: { findings: [{ ruleId: "param-description-missing", severity: "warning", tool: "search", message: "limit has no description" }], counts: {} },
+    smoke: { runs: [{ tool: "search", kind: "valid-minimal", label: "no parameters", ok: true }, { tool: "search", kind: "boundary", label: "q empty string", ok: true }], findings: [{ ruleId: "result-too-large", severity: "warning", tool: "search" }], counts: {} },
+  });
+  const raw = { status: "ok", host: "two.example", probe: null, pages: [page("https://two.example/"), page("https://two.example/search")] };
+  const row = summarizeSite(raw, {}, undefined);
+  assert.equal(row.runs_valid, 2);
+  assert.equal(row.tools_executed, 1);
+  assert.equal(row.r_param_description_missing, 1);
+  assert.equal(row.r_result_too_large, 1);
+});

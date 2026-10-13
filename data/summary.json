@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-13T10:18:36.896Z",
+  "generatedAt": "2026-10-13T16:35:19.997Z",
   "sites": {
     "total": 2964,
     "scanned": 2943,
@@ -49,18 +49,18 @@
     "consequential_pct": 1.2,
     "untrusted_pct": 18.2,
     "executed": 3842,
-    "passed_pct": 68.3
+    "passed_pct": 68.7
   },
   "runs": {
-    "valid": 15458,
-    "valid_ok_pct": 85.7
+    "valid": 13616,
+    "valid_ok_pct": 86.9
   },
   "sites_with_lint_errors": 38,
-  "sites_with_readonly_writes": 196,
+  "sites_with_readonly_writes": 195,
   "sites_posting": {
-    "any": 196,
+    "any": 195,
     "mcp": 46,
-    "analytics": 51,
+    "analytics": 50,
     "other": 112
   },
   "sites_legacy_surface": 28,
@@ -83,7 +83,7 @@
       "sites": 0
     },
     "description-length": {
-      "findings": 707,
+      "findings": 672,
       "sites": 203
     },
     "description-when-to-use": {
@@ -91,11 +91,11 @@
       "sites": 0
     },
     "param-description-missing": {
-      "findings": 9830,
+      "findings": 9180,
       "sites": 577
     },
     "param-description-length": {
-      "findings": 1463,
+      "findings": 1416,
       "sites": 236
     },
     "schema-shape": {
@@ -107,15 +107,15 @@
       "sites": 6
     },
     "schema-depth": {
-      "findings": 86,
+      "findings": 70,
       "sites": 49
     },
     "schema-unsupported-keywords": {
-      "findings": 4282,
+      "findings": 2378,
       "sites": 91
     },
     "sensitive-params": {
-      "findings": 123,
+      "findings": 114,
       "sites": 51
     },
     "duplicate-tool-name": {
@@ -123,11 +123,11 @@
       "sites": 3
     },
     "similar-descriptions": {
-      "findings": 1015,
+      "findings": 722,
       "sites": 95
     },
     "too-many-tools": {
-      "findings": 34,
+      "findings": 30,
       "sites": 26
     },
     "declarative-description": {
@@ -135,7 +135,7 @@
       "sites": 1
     },
     "declarative-field-description": {
-      "findings": 59,
+      "findings": 57,
       "sites": 28
     },
     "declarative-autosubmit-sensitive": {
@@ -143,11 +143,11 @@
       "sites": 0
     },
     "description-injection": {
-      "findings": 71,
+      "findings": 49,
       "sites": 28
     },
     "naming-consistency": {
-      "findings": 562,
+      "findings": 550,
       "sites": 261
     },
     "exposed-to-secure-origins": {
@@ -163,7 +163,7 @@
       "sites": 0
     },
     "capability-trifecta": {
-      "findings": 863,
+      "findings": 799,
       "sites": 482
     },
     "tool-shadowing": {
@@ -175,12 +175,12 @@
       "sites": 0
     },
     "result-error-on-valid-input": {
-      "findings": 3538,
+      "findings": 3084,
       "sites": 358
     },
     "result-contains-null": {
-      "findings": 1402,
-      "sites": 212
+      "findings": 1223,
+      "sites": 211
     },
     "result-not-serializable": {
       "findings": 0,
@@ -191,36 +191,36 @@
       "sites": 0
     },
     "result-too-large": {
-      "findings": 3502,
+      "findings": 3131,
       "sites": 569
     },
     "result-slow": {
-      "findings": 54,
-      "sites": 29
+      "findings": 50,
+      "sites": 28
     },
     "result-accepts-invalid-input": {
-      "findings": 6701,
+      "findings": 5917,
       "sites": 673
     },
     "result-string-json": {
-      "findings": 1022,
-      "sites": 173
+      "findings": 912,
+      "sites": 172
     },
     "result-suspicious-content": {
-      "findings": 156,
+      "findings": 121,
       "sites": 9
     },
     "result-navigates": {
-      "findings": 213,
-      "sites": 61
+      "findings": 160,
+      "sites": 60
     },
     "result-writes": {
-      "findings": 4273,
-      "sites": 196
+      "findings": 3820,
+      "sites": 195
     },
     "result-writes-cross-origin": {
-      "findings": 3506,
-      "sites": 321
+      "findings": 3117,
+      "sites": 320
     },
     "untrusted-content-unmarked": {
       "findings": 168,
@@ -232,14 +232,14 @@
       "sites": 157,
       "tools_seen": 1032,
       "tools_executed": 519,
-      "tools_passed_pct": 69.4,
+      "tools_passed_pct": 69.6,
       "sites_with_readonly_writes": 23
     },
     "Commerce": {
       "sites": 367,
       "tools_seen": 2251,
       "tools_executed": 896,
-      "tools_passed_pct": 63.5,
+      "tools_passed_pct": 65.1,
       "sites_with_readonly_writes": 57
     },
     "Developer Tools": {
@@ -253,7 +253,7 @@
       "sites": 81,
       "tools_seen": 333,
       "tools_executed": 196,
-      "tools_passed_pct": 68.4,
+      "tools_passed_pct": 68.9,
       "sites_with_readonly_writes": 5
     },
     "Health & Education": {
@@ -282,7 +282,7 @@
       "tools_seen": 1559,
       "tools_executed": 328,
       "tools_passed_pct": 58.5,
-      "sites_with_readonly_writes": 33
+      "sites_with_readonly_writes": 32
     }
   },
   "by_ora_grade": {
@@ -311,7 +311,7 @@
       "sites": 169,
       "tools_seen": 994,
       "tools_executed": 488,
-      "tools_passed_pct": 65,
+      "tools_passed_pct": 67.8,
       "sites_with_readonly_writes": 21
     },
     "D": {

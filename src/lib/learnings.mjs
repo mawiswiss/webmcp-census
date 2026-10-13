@@ -1,4 +1,4 @@
-import { EXEC_FAIL } from "./aggregate.mjs";
+import { EXEC_FAIL, siteCalls } from "./aggregate.mjs";
 import { median, mean, pct } from "./stats.mjs";
 
 const passRate = (r) => (r.tools_executed ? r.tools_passed / r.tools_executed : null);
@@ -57,9 +57,9 @@ const col = (id) => `r_${id.replace(/-/g, "_")}`;
 function toolsFlippedBy(raws, ruleId) {
   if (!EXEC_FAIL.has(ruleId)) return null;
   let flipped = 0;
-  for (const raw of raws) for (const page of raw.pages ?? []) {
+  for (const raw of raws) {
     const byTool = new Map();
-    for (const f of page.smoke?.findings ?? []) if (EXEC_FAIL.has(f.ruleId)) byTool.set(f.tool, (byTool.get(f.tool) ?? new Set()).add(f.ruleId));
+    for (const f of siteCalls((raw.pages ?? []).filter((p) => p.status === "ok")).findings) if (EXEC_FAIL.has(f.ruleId)) byTool.set(f.tool, (byTool.get(f.tool) ?? new Set()).add(f.ruleId));
     for (const rules of byTool.values()) if (rules.size === 1 && rules.has(ruleId)) flipped++;
   }
   return flipped;

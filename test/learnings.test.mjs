@@ -38,7 +38,7 @@ test("topVsRest compares sites where every called tool passed with sites where o
 });
 
 test("lowHangingFruits ranks cheap fixes by sites and counts tools a single fix would flip", () => {
-  const raws = [{ pages: [{ smoke: { findings: [
+  const raws = [{ pages: [{ status: "ok", smoke: { findings: [
     { ruleId: "result-contains-null", tool: "a" },
     { ruleId: "result-contains-null", tool: "b" }, { ruleId: "result-writes", tool: "b" },
   ] } }] }];
@@ -87,4 +87,10 @@ test("sites on the legacy surface become a fruit that counts the hidden tools", 
   assert.equal(fruit.findings, 3);
   assert.equal(fruit.tools_flipped, null);
   assert.match(fruit.fix, /document\.modelContext/);
+});
+
+test("a tool failing on null on two pages of a site flips once", () => {
+  const page = { status: "ok", smoke: { runs: [{ tool: "a", kind: "valid-minimal", ok: true }], findings: [{ ruleId: "result-contains-null", tool: "a" }] } };
+  const fruits = lowHangingFruits([], [{ pages: [page, page] }]);
+  assert.equal(fruits.find((f) => f.rule === "result-contains-null").tools_flipped, 1);
 });

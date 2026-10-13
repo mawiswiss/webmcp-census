@@ -30,12 +30,24 @@ export function classify(raw) {
   return "no-tools";
 }
 
+// The Q3 2026 run called a tool again on every page that listed it, so only its first page counts.
+export function siteCalls(pages) {
+  const firstPage = new Map();
+  pages.forEach((p, i) => { for (const r of p.smoke?.runs ?? []) if (!firstPage.has(r.tool)) firstPage.set(r.tool, i); });
+  const fromFirst = (i, tool) => !firstPage.has(tool) || firstPage.get(tool) === i;
+  return {
+    runs: pages.flatMap((p, i) => (p.smoke?.runs ?? []).filter((r) => fromFirst(i, r.tool))),
+    findings: pages.flatMap((p, i) => (p.smoke?.findings ?? []).filter((f) => fromFirst(i, f.tool))),
+  };
+}
+
+const uniqueFindings = (findings) => [...new Map(findings.map((f) => [[f.ruleId, f.tool, f.message].join("|"), f])).values()];
+
 export function summarizeSite(raw, site = {}, ora) {
   const pages = (raw.pages ?? []).filter((p) => p.status === "ok");
   const tools = [...new Map(pages.flatMap((p) => p.snapshot?.tools ?? []).map((t) => [t.name, t])).values()];
-  const runs = pages.flatMap((p) => p.smoke?.runs ?? []);
-  const lintFindings = pages.flatMap((p) => p.lint?.findings ?? []);
-  const smokeFindings = pages.flatMap((p) => p.smoke?.findings ?? []);
+  const { runs, findings: smokeFindings } = siteCalls(pages);
+  const lintFindings = uniqueFindings(pages.flatMap((p) => p.lint?.findings ?? []));
   const all = [...lintFindings, ...smokeFindings];
   const executed = [...new Set(runs.map((r) => r.tool))];
   const validRuns = runs.filter((r) => r.kind !== "invalid");

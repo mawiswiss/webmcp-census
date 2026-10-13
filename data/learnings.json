@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-13T14:07:19.373Z",
+  "generatedAt": "2026-10-13T16:35:20.025Z",
   "baseline": {
     "sites": 1748,
     "tools_seen": 4,
@@ -15,8 +15,8 @@
   },
   "top_vs_rest": {
     "definition": "top: sites where every executed tool passed; rest: sites where at least one executed tool failed",
-    "top_sites": 454,
-    "rest_sites": 477,
+    "top_sites": 455,
+    "rest_sites": 476,
     "top_hosts": [
       "4over4.com",
       "argos-ci.com",
@@ -181,6 +181,7 @@
       "whatpriceglory.com",
       "zkxp.xyz",
       "aromaavenue.ro",
+      "betteroff.finance",
       "bezkecov.sk",
       "binds.co",
       "blotato.com",
@@ -479,36 +480,36 @@
         "rest": 7.85
       },
       "annotated_share": {
-        "top": 89.4,
-        "rest": 92.32
+        "top": 89.42,
+        "rest": 92.31
       },
       "readonly_share": {
-        "top": 74.94,
-        "rest": 72.98
+        "top": 74.91,
+        "rest": 73
       },
       "consequential_share": {
-        "top": 1.25,
+        "top": 1.24,
         "rest": 1.36
       },
       "untrusted_share": {
         "top": 18.82,
-        "rest": 30.41
+        "rest": 30.43
       },
       "desc_len_median": {
-        "top": 210.87,
-        "rest": 360.17
+        "top": 210.88,
+        "rest": 360.47
       },
       "params_described_pct": {
-        "top": 89.31,
-        "rest": 79.6
+        "top": 89.16,
+        "rest": 79.71
       },
       "lint_errors_per_tool": {
         "top": 0.01,
         "rest": 0.01
       },
       "act_share": {
-        "top": 28.64,
-        "rest": 32.07
+        "top": 28.57,
+        "rest": 32.14
       },
       "pass_rate": {
         "top": 1,
@@ -520,78 +521,78 @@
     "rules_by_sites": [
       {
         "rule": "result-accepts-invalid-input",
-        "findings": 6701,
+        "findings": 5917,
         "sites": 673
       },
       {
         "rule": "param-description-missing",
-        "findings": 9830,
+        "findings": 9180,
         "sites": 577
       },
       {
         "rule": "result-too-large",
-        "findings": 3502,
+        "findings": 3131,
         "sites": 569
       },
       {
         "rule": "capability-trifecta",
-        "findings": 863,
+        "findings": 799,
         "sites": 482
       },
       {
         "rule": "result-error-on-valid-input",
-        "findings": 3538,
+        "findings": 3084,
         "sites": 358
       },
       {
         "rule": "result-writes-cross-origin",
-        "findings": 3506,
-        "sites": 321
+        "findings": 3117,
+        "sites": 320
       },
       {
         "rule": "naming-consistency",
-        "findings": 562,
+        "findings": 550,
         "sites": 261
       },
       {
         "rule": "param-description-length",
-        "findings": 1463,
+        "findings": 1416,
         "sites": 236
       },
       {
         "rule": "result-contains-null",
-        "findings": 1402,
-        "sites": 212
+        "findings": 1223,
+        "sites": 211
       },
       {
         "rule": "description-length",
-        "findings": 707,
+        "findings": 672,
         "sites": 203
       },
       {
         "rule": "result-writes",
-        "findings": 4273,
-        "sites": 196
+        "findings": 3820,
+        "sites": 195
       },
       {
         "rule": "result-string-json",
-        "findings": 1022,
-        "sites": 173
+        "findings": 912,
+        "sites": 172
       },
       {
         "rule": "similar-descriptions",
-        "findings": 1015,
+        "findings": 722,
         "sites": 95
       },
       {
         "rule": "schema-unsupported-keywords",
-        "findings": 4282,
+        "findings": 2378,
         "sites": 91
       },
       {
         "rule": "result-navigates",
-        "findings": 213,
-        "sites": 61
+        "findings": 160,
+        "sites": 60
       }
     ],
     "unannotated_tools_pct": 38.6,
@@ -604,15 +605,7 @@
         "tools_seen": 1559,
         "tools_executed": 328,
         "tools_passed_pct": 58.5,
-        "sites_with_readonly_writes": 33
-      },
-      {
-        "category": "Commerce",
-        "sites": 367,
-        "tools_seen": 2251,
-        "tools_executed": 896,
-        "tools_passed_pct": 63.5,
-        "sites_with_readonly_writes": 57
+        "sites_with_readonly_writes": 32
       },
       {
         "category": "Developer Tools",
@@ -621,6 +614,14 @@
         "tools_executed": 466,
         "tools_passed_pct": 63.5,
         "sites_with_readonly_writes": 19
+      },
+      {
+        "category": "Commerce",
+        "sites": 367,
+        "tools_seen": 2251,
+        "tools_executed": 896,
+        "tools_passed_pct": 65.1,
+        "sites_with_readonly_writes": 57
       }
     ],
     "strongest_categories": [
@@ -645,7 +646,7 @@
         "sites": 157,
         "tools_seen": 1032,
         "tools_executed": 519,
-        "tools_passed_pct": 69.4,
+        "tools_passed_pct": 69.6,
         "sites_with_readonly_writes": 23
       }
     ]
@@ -662,49 +663,49 @@
       "rule": "result-accepts-invalid-input",
       "fix": "Reject input that would give a wrong answer, with an error naming the valid values. Coerce harmless mismatches such as \"10\" for 10, and treat null as omitted.",
       "sites": 673,
-      "findings": 6701,
+      "findings": 5917,
       "tools_flipped": null
     },
     {
       "rule": "param-description-missing",
       "fix": "Add a description to every input property.",
       "sites": 577,
-      "findings": 9830,
+      "findings": 9180,
       "tools_flipped": null
     },
     {
       "rule": "result-too-large",
       "fix": "The audit's 1,500-character budget is set for a small model's context window. Keep answers complete with the most important data first, and page long lists instead of cutting them.",
       "sites": 569,
-      "findings": 3502,
+      "findings": 3131,
       "tools_flipped": null
     },
     {
       "rule": "result-contains-null",
       "fix": "Where a tool can return null, leave the field out or return an empty value instead.",
-      "sites": 212,
-      "findings": 1402,
-      "tools_flipped": 382
+      "sites": 211,
+      "findings": 1223,
+      "tools_flipped": 337
     },
     {
       "rule": "description-length",
       "fix": "Write 20 to 600 characters that say what the tool does and when to call it.",
       "sites": 203,
-      "findings": 707,
+      "findings": 672,
       "tools_flipped": null
     },
     {
       "rule": "result-string-json",
       "fix": "Return the object, not JSON inside a string.",
-      "sites": 173,
-      "findings": 1022,
+      "sites": 172,
+      "findings": 912,
       "tools_flipped": null
     },
     {
       "rule": "schema-unsupported-keywords",
       "fix": "Flatten $ref, oneOf, anyOf and allOf into plain object schemas.",
       "sites": 91,
-      "findings": 4282,
+      "findings": 2378,
       "tools_flipped": null
     },
     {
