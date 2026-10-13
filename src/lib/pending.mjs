@@ -1,3 +1,4 @@
+import { classify } from "./aggregate.mjs";
 import { scrubText } from "./scrub.mjs";
 
 export function pendingHosts(directory, doneSet, optout) {
@@ -15,4 +16,8 @@ const OFFLINE = /net::ERR_(INTERNET_DISCONNECTED|NETWORK_CHANGED|NETWORK_IO_SUSP
 
 export function wasOffline(raw) {
   return [...(raw.pages ?? []).map((p) => p.error), raw.probe?.error].some((e) => OFFLINE.test(e ?? ""));
+}
+
+export function needsRetry(raw) {
+  return classify(raw) === "error";
 }

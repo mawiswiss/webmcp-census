@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { errorFor, pendingHosts } from "./lib/pending.mjs";
+import { errorFor, needsRetry, pendingHosts } from "./lib/pending.mjs";
 
 const CONCURRENCY = Number(process.env.CENSUS_CONCURRENCY ?? 4);
 const TIMEOUT_MS = Number(process.env.CENSUS_TIMEOUT_MS ?? 420_000);
@@ -11,7 +11,7 @@ mkdirSync("data/raw", { recursive: true });
 const optout = existsSync("data/optout.txt") ? readFileSync("data/optout.txt", "utf8").split("\n") : [];
 const done = new Set(readdirSync("data/raw").filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)).filter((h) => {
   if (!retryErrors) return true;
-  return JSON.parse(readFileSync(`data/raw/${h}.json`, "utf8")).status !== "error";
+  return !needsRetry(JSON.parse(readFileSync(`data/raw/${h}.json`, "utf8")));
 }));
 const queue = pendingHosts(directory, done, optout);
 if (process.env.CENSUS_LIMIT) queue.length = Math.min(queue.length, Number(process.env.CENSUS_LIMIT));

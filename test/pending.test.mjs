@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { homedir } from "node:os";
-import { errorFor, pendingHosts, wasOffline } from "../src/lib/pending.mjs";
+import { errorFor, needsRetry, pendingHosts, wasOffline } from "../src/lib/pending.mjs";
 
 test("pendingHosts skips done hosts and opted-out hosts, keeps directory order", () => {
   const directory = { sites: [{ host: "a.example" }, { host: "b.example" }, { host: "c.example" }, { host: "d.example" }] };
@@ -28,4 +28,11 @@ test("a host whose pages failed because this machine was offline is not a result
   assert.equal(wasOffline({ status: "ok", pages: [{ ...offlinePage, error: "page.goto: net::ERR_NAME_NOT_RESOLVED at https://h.example/" }] }), false);
   assert.equal(wasOffline({ status: "ok", pages: [{ url: "https://h.example/", status: "ok" }], probe: { error: "page.goto: net::ERR_INTERNET_DISCONNECTED" } }), true);
   assert.equal(wasOffline({ status: "skipped", host: "h.example" }), false);
+});
+
+test("the retry pass takes a host whose every page failed, like one that failed outright", () => {
+  assert.equal(needsRetry({ status: "error", host: "h.example", error: "timeout" }), true);
+  assert.equal(needsRetry({ status: "ok", host: "h.example", pages: [{ url: "https://h.example/", status: "error", error: "page.goto: Timeout 30000ms exceeded." }] }), true);
+  assert.equal(needsRetry({ status: "ok", host: "h.example", pages: [{ url: "https://h.example/", status: "ok", snapshot: { tools: [] } }] }), false);
+  assert.equal(needsRetry({ status: "skipped", host: "h.example", reason: "robots" }), false);
 });
