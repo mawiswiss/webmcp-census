@@ -44,7 +44,7 @@ The skill gives your coding agent the WebMCP spec, the census findings and Pasca
        /plugin marketplace add mawiswiss/webmcp-census
        /plugin install webmcp-readiness@webmcp-census
 
-   In Cursor, Codex, GitHub Copilot, Gemini CLI and other agents, with the [skills CLI](https://github.com/vercel-labs/skills). Untested until this repository is public:
+   In Cursor, Codex, GitHub Copilot, Gemini CLI and other agents, with the [skills CLI](https://github.com/vercel-labs/skills):
 
        npx skills add mawiswiss/webmcp-census
 
